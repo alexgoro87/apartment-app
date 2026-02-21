@@ -79,22 +79,35 @@ document.addEventListener('DOMContentLoaded', () => {
         return APT_TYPE_MAP[key] || '?';
     }
 
-    // Mapping between apartment catalog type and PDF page number (Populated by AI Vision Agent)
+    // Mapping between apartment catalog type and PDF page number
+    // V7B: Architecture changed from generic type to Lot-specific type.
+    // Example: PDF_PAGE_MAP['102']['C'] = 13 (Needs filling with correct pages from actual catalog)
     const PDF_PAGE_MAP = {
-        'A': 42, 'A+': 33, 'A 1': 42, 'A 2': 39, 'A 3': 45, 'A 5': 49, 'A 6': 56,
-        'B': 23, 'B-': 54, 'B 1': 28, 'B 2': 29, 'B- 1': 53,
-        'C': 13, 'C-': 18, 'C 1': 17, 'C 2': 20, 'C 4': 15, 'C 5': 51, 'C 6': 48, 'C 7': 52, 'C- 1': 19,
-        'D': 12, 'D1': 12, 'D2': 12
+        '102': {
+            'A': null, 'A 1': null, 'A 2': null, 'A 4': null, 'A 5': null, 'A 6': null,
+            'B': null, 'B 1': null, 'B 2': null, 'B 3': null, 'B 4': null,
+            'C': null, 'C 1': null, 'C 2': null, 'C 3': null,
+            'E': null, 'E 1': null, 'E 2': null, 'E 3': null,
+            'D': null, 'D3': null
+        },
+        '103': {
+            'A': null, 'A+': null, 'A+ 1': null, 'A+ 2': null, 'A+ 3': null, 'A+ 4': null,
+            'A 1': null, 'A 2': null, 'A 3': null, 'A 5': null, 'A 6': null,
+            'B': null, 'B-': null, 'B- 1': null, 'B 1': null, 'B 2': null, 'B 3': null, 'B 4': null,
+            'C': null, 'C-': null, 'C- 1': null, 'C- 2': null,
+            'C 1': null, 'C 2': null, 'C 3': null, 'C 4': null, 'C 5': null, 'C 6': null, 'C 7': null,
+            'D': null, 'D1': null, 'D2': null
+        }
     };
 
-    function getPdfPageUrl(aptType) {
+    function getPdfPageUrl(apt) {
         // Base URL to the PDF
         const baseUrl = "../קטלוג-משתכן-רמת-רבין.pdf";
-        const page = PDF_PAGE_MAP[aptType];
+        if (!apt) return baseUrl;
 
-        // If we have a mapped page, append #page=X
-        if (page) {
-            return `${baseUrl}#page=${page}`;
+        const lotMap = PDF_PAGE_MAP[apt.lot];
+        if (lotMap && lotMap[apt.aptType]) {
+            return `${baseUrl}#page=${lotMap[apt.aptType]}`;
         }
         return baseUrl;
     }
@@ -478,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="status-btn ${btnClass}" data-id="${apt.id}" style="flex:1; min-width:80px;">
                         ${statusText}
                     </button>
-                    <button type="button" onclick="openImageViewer('${apt.aptType}'); event.stopPropagation();" class="btn-outline" style="padding: 0.65rem 0.75rem; font-family: inherit; font-size: 0.95rem; border-radius: 8px; cursor: pointer; background: transparent;" title="שרטוט">
+                    <button type="button" onclick="openImageViewer('${apt.id}'); event.stopPropagation();" class="btn-outline" style="padding: 0.65rem 0.75rem; font-family: inherit; font-size: 0.95rem; border-radius: 8px; cursor: pointer; background: transparent;" title="שרטוט">
                         <i class="fa-solid fa-map"></i>
                     </button>
                     <button type="button" onclick="toggleFavorite('${apt.id}', event)" class="btn-outline ${isFav ? 'fav-active' : ''}" style="padding: 0.65rem 0.75rem; font-family: inherit; font-size: 0.95rem; border-radius: 8px; cursor: pointer; background: transparent;" title="מועדפים">
@@ -738,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
-                <button onclick="openImageViewer('${apt.aptType}')" class="btn-outline" style="padding: 1rem 2rem; text-align: center; flex: 1; border: none; font-size: 1rem; cursor: pointer; background: rgba(59, 130, 246, 0.1); color: var(--text-main); font-family: inherit; border-radius: 8px;">
+                <button onclick="openImageViewer('${apt.id}')" class="btn-outline" style="padding: 1rem 2rem; text-align: center; flex: 1; border: none; font-size: 1rem; cursor: pointer; background: rgba(59, 130, 246, 0.1); color: var(--text-main); font-family: inherit; border-radius: 8px;">
                     <i class="fa-solid fa-map"></i> שרטוט פלורפלן
                 </button>
                 <button onclick="shareWhatsApp('${apt.id}', {stopPropagation:()=>{}})" style="padding: 1rem 2rem; text-align: center; flex: 1; border: none; font-size: 1rem; cursor: pointer; background: rgba(37,211,102,0.1); color: var(--text-main); font-family: inherit; border-radius: 8px; cursor:pointer;">
@@ -903,12 +916,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Bind globally so the inline onclick can find it
-    window.openImageViewer = function (aptType) {
+    window.openImageViewer = function (aptId) {
+        const apt = processedData.find(a => a.id === aptId);
+        if (!apt) return;
+
         const viewerModal = document.getElementById('image-viewer-modal');
         const viewerImage = document.getElementById('viewer-image');
+        const viewerTitle = document.getElementById('viewer-title');
+
+        if (viewerTitle) {
+            viewerTitle.innerHTML = `<div><i class="fa-solid fa-map"></i> טיפוס ${apt.aptType.replace(' ', '')}</div><div style="font-size: 0.85rem; color: #ccc; margin-top: 2px;">בניין ${apt.building.replace(/[A-Za-z]/g, '')} | מתחם ${apt.lot}</div>`;
+        }
 
         // Sanitize string to match what we downloaded
-        const safeName = aptType.replace(/[^a-zA-Z0-9\+\-]/g, '_');
+        const safeName = apt.aptType.replace(/[^a-zA-Z0-9\+\-]/g, '_');
         viewerImage.src = `floorplans/floorplan_${safeName}.png`;
 
         // Reset zoom state
