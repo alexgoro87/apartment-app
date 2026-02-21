@@ -170,8 +170,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // V3: Add pricePerSqm as primary metric
-    processedData.forEach(apt => { apt.pricePerSqm = apt.area ? Math.round(apt.price / apt.area) : 0; });
+    // V3: Add pricePerSqm as primary metric and calculate dealScore
+    processedData.forEach(apt => {
+        apt.pricePerSqm = apt.area ? Math.round(apt.price / apt.area) : 0;
+
+        // Calculate deal score based on rank (1 is best, max rank is ~124)
+        // A rank of 1 gives a score of 100. A rank of 124 gives a score of ~1.
+        let rawScore = 100 - ((apt.rank - 1) * (100 / 124));
+        apt.dealScore = apt.rank === 999 ? 0 : Math.max(1, Math.round(rawScore));
+    });
     window.processedData = processedData;
 
 
@@ -574,24 +581,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('compare-modal');
         if (!modal) return;
         const apts = [...compareList].map(id => processedData.find(a => a.id === id)).filter(Boolean);
+
         const fields = [
-            ['מחיר', a => `${formatPrice(a.price)} ₪`],
-            ['שטח', a => `${a.area} מ"ר`],
-            ['₪/מ"ר', a => `${formatPrice(Math.round(a.price / a.area))} ₪`],
-            ['חדרים', a => a.rooms],
-            ['קומה', a => a.floor],
-            ['מרפסת', a => `${a.balcony} מ"ר`],
-            ['כיוון', a => a.sun === 'חמה' ? '☀️ חמה' : '❄️ קרירה'],
-            ['מחסן', a => `${a.storage} מ"ר`],
-            ['חניה', a => `${a.distance}מ'`],
-            ['ציון עסקה', a => `${a.dealScore}/100`],
+            { label: 'מחיר', fn: a => `${formatPrice(a.price)} ₪`, val: a => a.price, best: 'min' },
+            { label: 'שטח', fn: a => `${a.area} מ"ר`, val: a => a.area, best: 'max' },
+            { label: '₪/מ"ר', fn: a => `${formatPrice(Math.round(a.price / a.area))} ₪`, val: a => Math.round(a.price / a.area), best: 'min' },
+            { label: 'חדרים', fn: a => a.rooms, val: a => a.rooms, best: 'max' },
+            { label: 'קומה', fn: a => a.floor, val: a => a.floor, best: 'max' },
+            { label: 'מרפסת', fn: a => `${a.balcony} מ"ר`, val: a => a.balcony, best: 'max' },
+            { label: 'כיוון', fn: a => a.sun === 'חמה' ? '☀️ חמה' : '❄️ קרירה', best: null },
+            { label: 'מחסן', fn: a => `${a.storage} מ"ר`, val: a => a.storage, best: 'max' },
+            { label: 'חניה', fn: a => `${a.distance}מ'`, val: a => a.distance, best: 'min' },
+            { label: 'ציון עסקה', fn: a => `${a.dealScore}/100`, val: a => a.dealScore, best: 'max' },
         ];
+
         const colWidth = `${Math.floor(80 / apts.length)}%`;
-        let html = `<div class="modal-header"><h2><i class="fa-solid fa-scale-balanced"></i> השוואת דירות</h2><button class="close-btn" onclick="document.getElementById('compare-modal').classList.remove('visible')"><i class="fa-solid fa-xmark"></i></button></div>`;
-        html += `<div style="overflow-x:auto;"><table class="compare-table"><thead><tr><th style="width:20%;">שדה</th>${apts.map(a => `<th style="width:${colWidth};text-align:center;">טיפוס ${a.aptType}<br><small>מבנה ${a.building}/ד' ${a.aptText}</small></th>`).join('')}</tr></thead><tbody>`;
-        fields.forEach(([label, fn]) => {
-            html += `<tr><td class="compare-label">${label}</td>${apts.map(a => `<td style="text-align:center;">${fn(a)}</td>`).join('')}</tr>`;
+        let html = `<div class="modal-header"><h2><i class="fa-solid fa-scale-balanced"></i> השוואת דירות (Compare Pro)</h2><button class="close-btn" onclick="document.getElementById('compare-modal').classList.remove('visible')"><i class="fa-solid fa-xmark"></i></button></div>`;
+
+        // Table Header with images
+        html += `<div style="overflow-x:auto;"><table class="compare-table"><thead><tr><th style="width:20%;">שדה</th>`;
+        html += apts.map(a => {
+            const safeName = a.aptType.replace(/\+/g, '+').replace(/\-/g, '-').replace(/ /g, '_');
+            const imgPath = `floorplans/floorplan_${a.lot}_${safeName}.png`;
+            return `<th style="width:${colWidth};text-align:center;">
+                טיפוס ${a.aptType}<br><small>מבנה ${a.building}/ד' ${a.aptText}</small><br>
+                <img src="${imgPath}" alt="שרטוט ${a.aptType}" onclick="openImageViewer('${a.id}')" title="לחץ להגדלת שרטוט" onerror="this.style.display='none'">
+            </th>`;
+        }).join('');
+        html += `</tr></thead><tbody>`;
+
+        // Table Body with Highlights
+        fields.forEach(field => {
+            let bestVal = null;
+            if (field.best && apts.length > 1) {
+                const vals = apts.map(field.val);
+                bestVal = field.best === 'max' ? Math.max(...vals) : Math.min(...vals);
+            }
+
+            html += `<tr><td class="compare-label">${field.label}</td>`;
+            html += apts.map(a => {
+                const displayVal = field.fn(a);
+                let isBest = false;
+                if (field.best && field.val(a) === bestVal) {
+                    // Check if there is actually a difference among the set
+                    const vals = apts.map(field.val);
+                    if (new Set(vals).size > 1) {
+                        isBest = true;
+                    }
+                }
+                const cellClass = isBest ? 'class="compare-best-value"' : '';
+                const starIcon = isBest && field.label === 'ציון עסקה' ? ' 🌟' : '';
+                return `<td style="text-align:center;" ${cellClass}>${displayVal}${starIcon}</td>`;
+            }).join('');
+            html += `</tr>`;
         });
+
         html += `</tbody></table></div>`;
         document.getElementById('compare-modal-content').innerHTML = html;
         modal.classList.add('visible');
@@ -623,8 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="font-size: 1.8rem; font-weight: bold; color: var(--accent); margin-top: 0.75rem;">${formatPrice(price)} ₪</div>
             </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <div class="financing-grid">
                 <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
                     <i class="fa-solid fa-piggy-bank" style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; display: block;"></i>
                     <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">הון עצמי (10%)</h3>
@@ -787,6 +830,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Print Summary Button -->
+            <div style="margin-top: 2rem; text-align: center; margin-bottom: 1rem;">
+                <button onclick="window.print()" class="btn-primary" style="padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; width: 100%; max-width: 300px; cursor: pointer; border: none; font-family: inherit;">
+                    <i class="fa-solid fa-file-pdf"></i> ייצוא תיק דירה (PDF)
+                </button>
+            </div>
         `;
 
         // Mortgage calc init

@@ -582,6 +582,28 @@ input[type=range] {
     background: rgba(255, 255, 255, 0.03);
 }
 
+.compare-table th img {
+    width: 60px;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s;
+    background-color: white;
+}
+
+.compare-table th img:hover {
+    transform: scale(1.1);
+}
+
+.compare-best-value {
+    color: var(--success) !important;
+    font-weight: 800;
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    border-radius: 4px;
+}
+
 .compare-label {
     color: var(--text-muted);
     font-size: 0.85rem;
@@ -791,5 +813,100 @@ body.light-mode {
         width: 100%;
         text-align: center;
         margin-bottom: 0.4rem;
+    }
+
+    .top-actions {
+        justify-content: center;
+        width: 100%;
+        gap: 0.3rem !important;
+    }
+
+    .top-actions .btn-secondary {
+        padding: 0.5rem 0.4rem !important;
+        font-size: 0.85rem;
+    }
+
+    /* Target the buttons inside the card on mobile to increase hit areas while reducing horizontal padding */
+    .btn-outline,
+    .status-btn {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        padding-left: 0.4rem !important;
+        padding-right: 0.4rem !important;
+    }
+}
+
+.financing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+    .financing-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === V7: Print Styles (Export to PDF) === */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    .app-header,
+    .filters-panel,
+    .top-actions,
+    #compare-bar,
+    #mobile-filter-toggle {
+        display: none !important;
+    }
+
+    .workspace {
+        display: none !important;
+    }
+
+    .modal {
+        position: static !important;
+        display: block !important;
+        background: white !important;
+        padding: 0 !important;
+    }
+
+    .modal-content.glass-panel {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        color: black !important;
+    }
+
+    /* Hide specific buttons inside the modal when printing */
+    .modal-content button,
+    .modal-content .close-btn,
+    .modal-content .status-btn {
+        display: none !important;
+    }
+
+    /* Force texts to be black for better print readability */
+    .text-muted,
+    [style*="color: var(--text-muted)"] {
+        color: #444 !important;
+    }
+
+    [style*="color: var(--accent)"] {
+        color: black !important;
+    }
+
+    /* Make the chart backgrounds print if possible */
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }
