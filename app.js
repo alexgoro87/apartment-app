@@ -925,12 +925,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const viewerTitle = document.getElementById('viewer-title');
 
         if (viewerTitle) {
-            viewerTitle.innerHTML = `<div><i class="fa-solid fa-map"></i> טיפוס ${apt.aptType.replace(' ', '')}</div><div style="font-size: 0.85rem; color: #ccc; margin-top: 2px;">בניין ${apt.building.replace(/[A-Za-z]/g, '')} | מתחם ${apt.lot}</div>`;
+            viewerTitle.innerHTML = `<div><i class="fa-solid fa-map"></i> טיפוס ${apt.aptType.replace(' ', '')}</div><div style="font-size: 0.85rem; color: #ccc; margin-top: 2px;">מתחם ${apt.lot} | שרטוט ייעודי לדגם זה</div>`;
         }
 
-        // Sanitize string to match what we downloaded
+        // Sanitize string to match what we downloaded (Lot + Type)
         const safeName = apt.aptType.replace(/[^a-zA-Z0-9\+\-]/g, '_');
-        viewerImage.src = `floorplans/floorplan_${safeName}.png`;
+        viewerImage.src = `floorplans/floorplan_${apt.lot}_${safeName}.png`;
 
         // Reset zoom state
         scale = 1;
