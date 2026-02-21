@@ -1041,11 +1041,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const diff = target - now;
         const el = document.getElementById('countdown-timer');
         if (!el) return;
-        if (diff <= 0) { el.textContent = '🎉 יום הבחירה הגיע!'; return; }
+        if (diff <= 0) { el.textContent = '🎉 האירוע הגיע!'; return; }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
-        el.textContent = `${d} ימים, ${h} שעות, ${m} דק' עד יום הבחירה ⏱️`;
+        el.textContent = `${d} ימים, ${h} שעות, ${m} דק' עד לבחירת הדירה ⏱️`;
     }
     updateCountdown();
     setInterval(updateCountdown, 60000);
