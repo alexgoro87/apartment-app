@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>רמת רבין - בחירת דירה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="רמת רבין">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="theme-color" content="#0f172a">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="header-content"
+                style="flex-wrap: wrap; align-items: center; gap: 0.75rem; justify-content: center;">
+                <div class="logo-area" style="min-width: 0; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-building-user" style="flex-shrink:0;"></i>
+                    <h1
+                        style="font-size: clamp(0.75rem, 2.5vw, 1.15rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin:0;">
+                        יום הבחירה</h1>
+                </div>
+                <div id="countdown-timer"
+                    style="flex: 1; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                </div>
+                <div id="stats-area" style="white-space: nowrap; flex-shrink: 0; font-size:0.85rem;">
+                    <span id="count-display">0</span> דירות
+                </div>
+                <div style="display:flex; gap: 0.4rem; align-items:center; flex-shrink: 0;">
+                    <button id="theme-toggle" onclick="toggleTheme()" class="btn-secondary" title="שינוי יום/לילה"
+                        style="padding:0.5rem 0.65rem;"><i class="fa-solid fa-moon"></i></button>
+                    <button onclick="addToCalendar()" class="btn-secondary" title="הוסף יום הבחירה ליומן"
+                        style="padding:0.5rem 0.65rem;"><i class="fa-regular fa-calendar-plus"></i></button>
+                    <button id="docs-btn" class="btn-secondary" title="מסמכים להורדה"><i
+                            class="fa-solid fa-folder-open"></i> <span class="btn-label">מסמכים</span></button>
+                    <button id="specs-btn" class="btn-secondary" title="מפרט טכני"><i
+                            class="fa-solid fa-clipboard-list"></i> <span class="btn-label">מפרט</span></button>
+                </div>
+            </div>
+
+            <!-- E2: Price Chart by Room Count -->
+            <div id="price-chart-wrap"
+                style="padding:0.4rem 1rem 0.2rem; border-top:1px solid var(--panel-border); display:flex; align-items:flex-end; gap:0.75rem; justify-content:center; direction:ltr;">
+            </div>
+
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Mobile Filter Toggle (Beta v2) -->
+            <button id="mobile-filter-toggle" class="btn-secondary" onclick="toggleMobileFilters()"
+                style="display:none; margin:0 1rem 0.5rem; width:calc(100% - 2rem); justify-content:center;">
+                <i class="fa-solid fa-sliders"></i> סינון דירות
+            </button>
+
+            <!-- Sidebar / Filters -->
+            <aside class="filters-panel glass-panel" id="filters-panel">
+                <h2><i class="fa-solid fa-filter"></i> סינון דירות</h2>
+
+                <div class="filter-group">
+                    <label>חדרים</label>
+                    <select id="filter-rooms" class="fancy-select">
+                        <option value="all">הכל</option>
+                        <option value="3">3 חדרים</option>
+                        <option value="4">4 חדרים</option>
+                        <option value="5">5 חדרים</option>
+                        <option value="6">6 חדרים</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>מבנה</label>
+                    <select id="filter-building" class="fancy-select">
+                        <option value="all">כל המבנים</option>
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>קומה</label>
+                    <select id="filter-floor" class="fancy-select">
+                        <option value="all">כל הקומות</option>
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>טווחי מחירים (₪)</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="number" id="filter-min-price" class="fancy-select" placeholder="מ-" value="900000"
+                            style="width: 50%;">
+                        <input type="number" id="filter-max-price" class="fancy-select" placeholder="עד-"
+                            value="2200000" style="width: 50%;">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>₪/מ"ר (מקסימום)</label>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <input type="range" id="filter-sqm-price" min="10000" max="17000" step="500" value="17000"
+                            style="flex:1;">
+                        <span id="filter-sqm-display"
+                            style="font-size:0.85rem; color:var(--accent); white-space:nowrap;">הכל</span>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>כיווני אוויר</label>
+                    <div class="toggle-group">
+                        <label class="radio-label">
+                            <input type="radio" name="sun" value="all" checked> הכל
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sun" value="חמה"> <i class="fa-solid fa-sun"
+                                style="color:#fbbf24"></i> חמה
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sun" value="קרירה"> <i class="fa-solid fa-snowflake"
+                                style="color:#60a5fa"></i> קרירה
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>סנן לפי סטטוס</label>
+                    <div class="status-toggle">
+                        <input type="checkbox" id="show-favs-only">
+                        <label for="show-favs-only">❤️ מועדפים בלבד</label>
+                    </div>
+                    <div class="status-toggle" style="margin-top: 0.5rem;">
+                        <input type="checkbox" id="filter-available" checked>
+                        <label for="filter-available">הצג רק פנויות</label>
+                    </div>
+                    <div class="status-toggle" style="margin-top: 0.5rem;">
+                        <input type="checkbox" id="filter-top-floor">
+                        <label for="filter-top-floor">רק קומה אחרונה</label>
+                    </div>
+                    <div class="status-toggle" style="margin-top: 0.5rem;">
+                        <input type="checkbox" id="filter-middle-floor">
+                        <label for="filter-middle-floor">רק קומות ביניים</label>
+                    </div>
+                </div>
+
+                <button id="reset-filters" class="btn-outline">נקה סינונים</button>
+
+                <!-- V3: Building Stats removed -->
+
+                <!-- G2: Floor Map Button -->
+                <button onclick="openFloorMap()" class="btn-secondary"
+                    style="margin-top:1rem; width:100%; justify-content:center; gap:0.5rem; display:flex;">
+                    <i class="fa-solid fa-map"></i> מפת קומות ויזואלית
+                </button>
+            </aside>
+
+            <!-- Data Area -->
+            <section class="data-panel">
+                <!-- Offline Notice (Round 5) -->
+                <div id="offline-notice"
+                    style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:10px; padding:0.5rem 1rem; margin-bottom:0.75rem; font-size:0.85rem; color:#ef4444; text-align:center;">
+                    ⚡ מצב אופליין — הנתונים נשמרו מקומית
+                </div>
+
+
+
+                <!-- Compare floating bar -->
+                <div id="compare-bar"
+                    style="display:none; background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:12px; padding:0.75rem 1rem; margin-bottom:1rem; gap:0.75rem; align-items:center; flex-wrap:wrap; backdrop-filter:blur(12px);">
+                </div>
+
+                <div class="sorting-bar">
+                    <div style="flex:1; min-width:140px;">
+                        <input type="text" id="search-input" placeholder="חפש... (מבנה, טיפוס, קומה)"
+                            class="fancy-select" style="width:100%;">
+                    </div>
+                    <label style="white-space:nowrap;">מיין:</label>
+                    <select id="sort-select" class="fancy-select" style="flex:1; min-width:140px;">
+                        <option value="rank-asc">דירוג</option>
+                        <option value="ppsqm-asc">₪/מ"ר ↑ (הכי זול)</option>
+                        <option value="price-asc">מחיר ↑</option>
+                        <option value="price-desc">מחיר ↓</option>
+                        <option value="size-desc">שטח ↓</option>
+                        <option value="floor-desc">קומה ↑</option>
+                        <option value="distance-asc">מרחק חניה ↑</option>
+                        <option value="balcony-desc">מרפסת ↓</option>
+                    </select>
+                    <!-- Grid/List toggle -->
+                    <button id="grid-toggle" onclick="toggleGridMode()" class="btn-secondary" title="שנה תצוגה"
+                        style="padding:0.5rem 0.65rem; flex-shrink:0;"><i class="fa-solid fa-grip"></i></button>
+                    <!-- CSV Export -->
+                    <button onclick="exportCSV()" class="btn-secondary" title="ייצוא רשימה"
+                        style="padding:0.5rem 0.65rem; flex-shrink:0;"><i class="fa-solid fa-file-csv"></i></button>
+                </div>
+
+                <div class="apartments-grid" id="apartments-grid">
+                    <!-- Cards will be injected via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Specs Modal -->
+    <div id="specs-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-specs-modal">&times;</span>
+            <h2><i class="fa-solid fa-clipboard-list"></i> תקציר מפרט טכני</h2>
+            <div class="specs-content"
+                style="max-height: 50vh; overflow-y: auto; padding-right: 1rem; margin-top: 1rem;">
+                <!-- Summarized key points from typical ISRAELI public housing (Mehir Lamishtaken) specs -->
+                <ul style="line-height: 1.8;">
+                    <li><strong>ריצוף:</strong> גרניט פורצלן 80x80 כולל בחירה מ-12 גוונים (למעט חדרים רטובים). ריצוף
+                        אנטי-סליפ (R10/R11) במרפסות וחדרי רחצה.</li>
+                    <li><strong>דלתות:</strong> דלת כניסה פלדה בטחונית. דלתות פנים עץ במילוי כוורת/פלקסבורד (פנדור או
+                        שווה ערך) במספר גוונים.</li>
+                    <li><strong>מיזוג אוויר:</strong> <i>הכנה בלבד</i>. מיני מרכזי בסלון ועיליים בחדרים (כולל צנרת ניקוז
+                        וחשמל).</li>
+                    <li><strong>חשמל:</strong> חיבור תלת פאזי 3x25A, אינטרקום עם מסך מגע צבעוני.</li>
+                    <li><strong>מטבח:</strong> ארון סנדוויץ'/MDF, שיש אבן קיסר 2 ס"מ (3 גוונים לבחירה), כיור בהתקנה
+                        שטוחה או אינטגרלית.</li>
+                    <li><strong>כלים סניטריים:</strong> מונחות כסטנדרט (קיימת אופציה לתלויות), ברזי "חמת" (או שווה ערך),
+                        ארון אמבטיה בחדר רחצה מרכזי.</li>
+                    <li><strong>תריסים וחלונות:</strong> תריס גלילה חשמלי בסלון בלבד. שאר החדרים תריסים ידניים. חלונות
+                        אלומיניום עם זכוכית בידודית.</li>
+                </ul>
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <a href="docs/הגרלה-2279-מפרט-חתום.pdf" target="_blank" class="btn-outline"
+                        style="text-decoration:none; display:inline-block;"><i class="fa-solid fa-file-pdf"></i> צפה
+                        במפרט המלא (PDF)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents Modal -->
+    <div id="docs-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fa-solid fa-file-pdf"></i> מסמכי הפרויקט</h2>
+            <p>גישה מהירה לטפסים הרלוונטיים:</p>
+            <div class="docs-list">
+                <a href="docs/טופס-בחירת-דירה.pdf" target="_blank" class="doc-card">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>טופס בחירת דירה</span>
+                </a>
+                <a href="docs/יפויי-כח-לבחירת-דירה.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-signature"></i>
+                    <span>ייפוי שוח לבחירה</span>
+                </a>
+                <a href="docs/יפויי-כח-לחתימת-הסכם.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>ייפוי כוח לחתימה</span>
+                </a>
+                <a href="docs/הגרלה-2279-מפרט-חתום.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-ruler-combined"></i>
+                    <span>מפרט טכני של הבניין</span>
+                </a>
+                <a href="docs/קטלוג-משתכן-רמת-רבין.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-map"></i>
+                    <span>קטלוג פלורפלנים</span>
+                </a>
+                <a href="docs/הגרלה-2279-ג24-חתום.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-scroll"></i>
+                    <span>מסמך ג'4</span>
+                </a>
+                <a href="docs/לאטי-2279-הסכם-חתום.pdf" target="_blank" class="doc-card">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <span>הסכם חתום</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apartment Details Modal -->
+    <div id="apt-modal" class="modal">
+        <div class="modal-content glass-panel" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <span class="close-modal">&times;</span>
+            <div id="apt-modal-content">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Modal (Beta v2) -->
+    <div id="compare-modal" class="modal">
+        <div class="modal-content glass-panel" style="max-width:900px; max-height:90vh; overflow-y:auto;">
+            <div id="compare-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- G2: Floor Map Modal -->
+    <div id="floormap-modal" class="modal">
+        <div class="modal-content glass-panel" style="max-width:98vw; max-height:92vh; overflow:auto; padding:1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h2><i class="fa-solid fa-map"></i> מפת קומות</h2>
+                <button class="close-btn"
+                    onclick="document.getElementById('floormap-modal').classList.remove('visible')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; display:flex; gap:1rem;">
+                <span style="display:inline-flex;align-items:center;gap:4px;"><span
+                        style="width:12px;height:12px;background:#10b981;border-radius:3px;display:inline-block;"></span>
+                    פנויה</span>
+                <span style="display:inline-flex;align-items:center;gap:4px;"><span
+                        style="width:12px;height:12px;background:#ef4444;border-radius:3px;display:inline-block;"></span>
+                    נלקחה</span>
+                <span style="display:inline-flex;align-items:center;gap:4px;"><span
+                        style="width:12px;height:12px;background:#3b82f6;border-radius:3px;display:inline-block;"></span>
+                    מועדפת</span>
+            </div>
+            <div id="floormap-content" style="overflow-x:auto;"></div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Mobile Image Viewer (Pinch to Zoom Supported) -->
+    <div id="image-viewer-modal" class="modal" style="background: rgba(0,0,0,0.95); z-index: 99999; display: none;">
+        <span class="close-viewer"
+            style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 100000; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">x</span>
+        <div id="image-viewer-container"
+            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: auto; position: relative; z-index: 99999;">
+            <img id="viewer-image" src="" alt="Floorplan"
+                style="max-width: 100%; max-height: 100vh; object-fit: contain; transform-origin: center center; transition: transform 0.1s ease-out;">
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top"
+        style="display:none; position:fixed; bottom:2rem; left:1.5rem; z-index:999; width:48px; height:48px; border-radius:50%; background:var(--primary); color:white; border:none; font-size:1.2rem; cursor:pointer; box-shadow:0 4px 20px rgba(59,130,246,0.5); transition:all 0.2s;"
+        title="חזור לראש">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

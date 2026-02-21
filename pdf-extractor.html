@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Floorplan Extractor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui;
+            text-align: center;
+            padding: 2rem;
+            background: #111;
+            color: white;
+        }
+
+        .dropzone {
+            border: 3px dashed #4ade80;
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 2rem auto;
+            max-width: 600px;
+            cursor: pointer;
+            background: rgba(74, 222, 128, 0.1);
+            transition: 0.3s;
+        }
+
+        .dropzone:hover {
+            background: rgba(74, 222, 128, 0.2);
+        }
+
+        select,
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            margin: 0.5rem;
+        }
+
+        button {
+            background: #4ade80;
+            color: #111;
+            font-weight: bold;
+        }
+
+        #canvas-container {
+            margin-top: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        #controls {
+            display: none;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>כלי חילוץ שרטוטים (Remote-Ready)</h1>
+    <p>גרור לכאן את קובץ הקטלוג (PDF) כדי לחלץ את עמודי השרטוט כתמונות באיכות גבוהה</p>
+
+    <div class="dropzone" id="dropzone">גרירת ה-PDF הנה או לחיצה לבחירה</div>
+    <input type="file" id="file-input" accept="application/pdf" style="display:none">
+
+    <div id="controls">
+        <label>בחר טיפוס דירה: </label>
+        <select id="type-select">
+            <!-- options will be injected -->
+        </select>
+        <button id="download-btn" onclick="downloadCurrentPage()">הורד לשמירה בתיקייה (PNG) ↓</button>
+        <div style="margin-top: 1rem; color: #888;">התמונה מוכנה ושוקלת מעט מאוד במקום 65MB!</div>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        // Include the mapped dictionary
+        const PDF_PAGE_MAP = {
+            'A': 32, 'A+': 32, 'A 1': 33, 'A 2': 34, 'A 3': 37, 'A 5': 35, 'A 6': 36,
+            'B': 26, 'B-': 30, 'B 1': 28, 'B 2': 27, 'B- 1': 31,
+            'C': 13, 'C-': 17, 'C 1': 16, 'C 2': 14, 'C 4': 15, 'C 5': 20, 'C 6': 21, 'C 7': 19, 'C- 1': 18,
+            'D': 46, 'D1': 47, 'D2': 48
+        };
+
+        const select = document.getElementById('type-select');
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        let pdfDoc = null;
+
+        // Populate select
+        Object.keys(PDF_PAGE_MAP).forEach(type => {
+            let opt = document.createElement('option');
+            opt.value = type;
+            opt.textContent = `דגם ${type} (עמוד ${PDF_PAGE_MAP[type]})`;
+            select.appendChild(opt);
+        });
+
+        // Initialize file handling
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.borderColor = 'white'; });
+        dropzone.addEventListener('dragleave', e => { dropzone.style.borderColor = '#4ade80'; });
+
+        dropzone.addEventListener('drop', async e => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#4ade80';
+            const file = e.dataTransfer.files[0];
+            if (file) await handlePDF(file);
+        });
+
+        fileInput.addEventListener('change', async e => {
+            if (e.target.files[0]) await handlePDF(e.target.files[0]);
+        });
+
+        async function handlePDF(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const typedarray = new Uint8Array(arrayBuffer);
+                pdfDoc = await pdfjsLib.getDocument({ data: typedarray }).promise;
+                document.getElementById('controls').style.display = 'block';
+                document.getElementById('dropzone').style.display = 'none';
+                renderSelected();
+            } catch (err) {
+                alert("שגיאה בטעינת הקובץ, ודא שמדובר ב-PDF תקין.");
+                console.error(err);
+            }
+        }
+
+        async function renderSelected() {
+            if (!pdfDoc) return;
+            const type = select.value;
+            const pageNum = PDF_PAGE_MAP[type];
+            try {
+                const page = await pdfDoc.getPage(pageNum);
+
+                // Render at very high resolution for sharp blueprints
+                const viewport = page.getViewport({ scale: 2.5 });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const renderContext = { canvasContext: ctx, viewport: viewport };
+                await page.render(renderContext).promise;
+            } catch (e) {
+                console.error("Page not found", e);
+            }
+        }
+
+        select.addEventListener('change', renderSelected);
+
+        function downloadCurrentPage() {
+            if (!pdfDoc) return;
+            const type = select.value.replace(/[^a-zA-Z0-9\+\-]/g, '_'); // sanitize filename
+            const link = document.createElement('a');
+            link.download = `floorplan_${type}.png`;
+            link.href = canvas.toDataURL('image/png', 0.9);
+            link.click();
+        }
+    </script>
+</body>
+
+</html>
