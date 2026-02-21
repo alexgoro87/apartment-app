@@ -165,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
             price: parseInt(item['מחיר']) || 0,
             isTopFloor: item['אחרונה?'] === 'כן',
             status: safeGetItem(`apt_${item['דירה']}_${item['מבנה']}`) || 'available',
-            aptType: getAptType(String(item['מבנה']).trim(), String(item['דירה']).trim())
+            aptType: getAptType(String(item['מבנה']).trim(), String(item['דירה']).trim()),
+            lot: String(item['מגרש']).trim()
         };
     });
 
