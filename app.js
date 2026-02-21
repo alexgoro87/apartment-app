@@ -443,6 +443,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-header">
                     <div style="display:flex; align-items:center; gap:0.5rem;">
                         <div class="rank-badge" title="דירוג">#${apt.rank}</div>
+                        <!-- V6: Cloud Sync Indicators -->
+                        <div class="cloud-indicators" style="display:flex; gap:0.25rem;">
+                            ${window.cloudFavs && window.cloudFavs[apt.id] ? Object.keys(window.cloudFavs[apt.id]).filter(uid => window.cloudFavs[apt.id][uid]).map(uid => {
+                const config = {
+                    me: { icon: 'fa-user-tie', color: 'var(--primary)', name: 'אלכס' },
+                    wife: { icon: 'fa-user-nurse', color: '#ec4899', name: 'אנה' },
+                    advisor: { icon: 'fa-user-graduate', color: '#10b981', name: 'יועץ' }
+                };
+                const c = config[uid] || { icon: 'fa-user', color: '#ccc', name: 'משתמש' };
+                return `<i class="fa-solid ${c.icon}" style="font-size:0.75rem; color:${c.color}" title="נשמר ע״י ${c.name}"></i>`;
+            }).join('') : ''}
+                        </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:0.4rem;">
                         <span style="font-size:0.75rem; color:var(--text-muted);">${formatPrice(pricePerSqm)} ₪/מ"ר</span>
