@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>רמת רבין - בחירת דירה</title>
+    <title>פרויקט רבין כרמיאל - בחירת דירה</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,9 +13,13 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="רמת רבין">
+    <meta name="apple-mobile-web-app-title" content="פרויקט רבין כרמיאל">
     <link rel="apple-touch-icon" href="icon-512.png">
     <meta name="theme-color" content="#0f172a">
+
+    <!-- Firebase SDK (Version 9 CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 
 <body>
@@ -28,7 +32,7 @@
                     <i class="fa-solid fa-building-user" style="flex-shrink:0;"></i>
                     <h1
                         style="font-size: clamp(0.75rem, 2.5vw, 1.15rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin:0;">
-                        יום הבחירה</h1>
+                        פרויקט רבין כרמיאל</h1>
                 </div>
                 <div id="countdown-timer"
                     style="flex: 1; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -208,6 +212,28 @@
         </main>
     </div>
 
+    <!-- User Selection Modal (V6 Cloud Sync) -->
+    <div id="user-selector-modal" class="modal" style="display: none; background: rgba(15, 23, 42, 0.9);">
+        <div class="modal-content glass-panel" style="text-align: center; padding: 2.5rem;">
+            <h2 style="margin-bottom: 1rem;">מי משתמש באפליקציה? 🏠</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">הבחירות שלכם יסונכרנו בזמן אמת</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <button onclick="setUser('me')" class="btn-secondary"
+                    style="flex-direction: column; padding: 1.5rem; gap: 0.75rem;">
+                    <i class="fa-solid fa-user-tie" style="font-size: 2rem;"></i> <span>אני (אלכס)</span>
+                </button>
+                <button onclick="setUser('wife')" class="btn-secondary"
+                    style="flex-direction: column; padding: 1.5rem; gap: 0.75rem;">
+                    <i class="fa-solid fa-user-nurse" style="font-size: 2rem;"></i> <span>אשתי</span>
+                </button>
+                <button onclick="setUser('advisor')" class="btn-secondary"
+                    style="flex-direction: column; padding: 1.5rem; gap: 0.75rem;">
+                    <i class="fa-solid fa-user-graduate" style="font-size: 2rem;"></i> <span>יועץ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Specs Modal -->
     <div id="specs-modal" class="modal">
         <div class="modal-content glass-panel">
@@ -265,7 +291,7 @@
                 </a>
                 <a href="docs/קטלוג-משתכן-רמת-רבין.pdf" target="_blank" class="doc-card">
                     <i class="fa-solid fa-map"></i>
-                    <span>קטלוג פלורפלנים</span>
+                    <span>קטלוג פלורפלנים - רבין כרמיאל</span>
                 </a>
                 <a href="docs/הגרלה-2279-ג24-חתום.pdf" target="_blank" class="doc-card">
                     <i class="fa-solid fa-scroll"></i>
@@ -341,6 +367,7 @@
 
     <script src="data.js"></script>
     <script src="app.js"></script>
+    <script src="sync.js"></script>
 </body>
 
 </html>

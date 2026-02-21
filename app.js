@@ -107,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (favorites.has(id)) favorites.delete(id);
         else favorites.add(id);
         saveFavorites();
+
+        // V6: Sync to Cloud
+        if (window.syncFavorite && window.currentUser) {
+            window.syncFavorite(id, window.currentUser, favorites.has(id));
+        }
+
         renderData();
     };
 
@@ -214,6 +220,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // === ROUND 6: CLOUD SYNC & USER PROFILES ===
+    window.currentUser = safeGetItem('selected_user') || null;
+
+    window.setUser = function (userId) {
+        safeSetItem('selected_user', userId);
+        window.currentUser = userId;
+        document.getElementById('user-selector-modal').style.display = 'none';
+        showToast('פרופיל עודכן - הסנכרון פעיל', 'success');
+        renderData(); // Refresh cards to show cloud favorites
+    };
+
+    function checkUser() {
+        if (!window.currentUser) {
+            document.getElementById('user-selector-modal').style.display = 'flex';
+        }
+    }
+    setTimeout(checkUser, 1000);
+
     // Initial Render
     renderData();
     // === ROUND 2: GRID/LIST MODE ===
@@ -268,8 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'BEGIN:VEVENT',
             'DTSTART:20260310T070000Z',
             'DTEND:20260310T150000Z',
-            'SUMMARY:יום בחירת דירה - רמת רבין',
-            'DESCRIPTION:בחר את הדירה הטובה ביותר בפרויקט רמת רבין',
+            'SUMMARY:יום בחירת דירה - פרויקט רבין כרמיאל',
+            'DESCRIPTION:בחר את הדירה הטובה ביותר בפרויקט רבין כרמיאל',
             'END:VEVENT', 'END:VCALENDAR'
         ].join('\r\n');
         const blob = new Blob([ics], { type: 'text/calendar' });
@@ -552,13 +576,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const content = document.getElementById('apt-modal-content');
 
         const price = apt.price;
-        // V5: לוח תשלומים מעודכן לפי החוזה (10 פעימות)
-        const equity = Math.round(price * 0.20);
-        const mortgage = price - equity;
+        // V6: חלוקה מעודכנת להון עצמי 10% ומשכנתה 90%
+        const equityTotal = Math.round(price * 0.10);
+        const mortgageTotal = price - equityTotal;
 
         const paySelection = 2000;
         const payContract = Math.round(price * 0.07) - paySelection;
-        const pay13 = Math.round(price * 0.13);
+        // ה-13% הנותרים מורכבים מ-3% הון עצמי ו-10% משכנתה
+        const pay13Equity = Math.round(price * 0.03);
+        const pay13Mortgage = Math.round(price * 0.10);
+        const pay13Total = pay13Equity + pay13Mortgage;
+
         const pay10 = Math.round(price * 0.10);
 
         content.innerHTML = `
@@ -573,13 +601,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
                 <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
                     <i class="fa-solid fa-piggy-bank" style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; display: block;"></i>
-                    <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">הון עצמי (20%)</h3>
-                    <div style="font-size: 1.75rem; font-weight: bold; color: var(--text-main);">${formatPrice(equity)} ₪</div>
+                    <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">הון עצמי (10%)</h3>
+                    <div style="font-size: 1.75rem; font-weight: bold; color: var(--text-main);">${formatPrice(equityTotal)} ₪</div>
                 </div>
                 <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
                     <i class="fa-solid fa-hand-holding-dollar" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; display: block;"></i>
-                    <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">מימון / משכנתא משוערת (80%)</h3>
-                    <div style="font-size: 1.75rem; font-weight: bold; color: var(--text-main);">${formatPrice(mortgage)} ₪</div>
+                    <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">מימון / משכנתא משוערת (90%)</h3>
+                    <div style="font-size: 1.75rem; font-weight: bold; color: var(--text-main);">${formatPrice(mortgageTotal)} ₪</div>
                 </div>
             </div>
 
@@ -603,13 +631,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(payContract)} ₪</strong>
                     </li>
-                    <!-- 13% -->
+                    <!-- 13% (split 3/10) -->
                     <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.05); border-radius: 6px;">
                         <div>
-                            <div style="font-weight:600; color: var(--text-main);">יתרת הון עצמי (13%)</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">7.5.2026 (תוך 45 יום מחתימת החוזה)</div>
+                            <div style="font-weight:600; color: var(--text-main);">יתרת תשלום שלישי (13%)</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">7.5.2026 (3% הון + 10% משכנתה)</div>
                         </div>
-                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(pay13)} ₪</strong>
+                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(pay13Total)} ₪</strong>
                     </li>
                     <!-- 8x 10% -->
                     <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
@@ -681,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div style="flex:1; min-width:140px;">
                         <label style="color:var(--text-muted); font-size:0.85rem;">שנות משכנתא</label>
-                        <input id="mort-years" type="number" value="25" step="1" style="width:100%; margin-top:0.3rem; padding:0.5rem; border-radius:6px; background:rgba(15,23,42,0.8); color:white; border:1px solid var(--panel-border); font-family:inherit; text-align:center;" oninput="calcMort('${apt.id}',${apt.price})">
+                        <input id="mort-years" type="number" value="30" step="1" style="width:100%; margin-top:0.3rem; padding:0.5rem; border-radius:6px; background:rgba(15,23,42,0.8); color:white; border:1px solid var(--panel-border); font-family:inherit; text-align:center;" oninput="calcMort('${apt.id}',${apt.price})">
                     </div>
                     <div style="flex:1; min-width:140px; text-align:center;">
                         <div style="color:var(--text-muted); font-size:0.85rem;">תשלום חודשי</div>
@@ -842,7 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <tr><td>₪ למ"ר</td><td>${formatPrice(Math.round(apt.price / apt.area))} ₪</td></tr>
             ${note ? `<tr><td>הערות שלי</td><td>${note}</td></tr>` : ''}
         </table>
-        <footer>הודפס מ-apartmentsrabin.netlify.app | רמת רבין ${new Date().toLocaleDateString('he-IL')}</footer>
+        <footer>הודפס מ-apartmentsrabin.netlify.app | פרויקט רבין כרמיאל ${new Date().toLocaleDateString('he-IL')}</footer>
         <button class="print-btn" onclick="window.print()" style="margin-top:1.5rem;padding:0.75rem 2rem;background:#2563eb;color:white;border:none;border-radius:8px;font-size:1rem;cursor:pointer;">הדפס / שמור PDF</button>
         </body></html>`);
         w.document.close();
