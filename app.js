@@ -56,17 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === Dynamic isTopFloor computation ===
-    // User specifically requested that the "Top Floor" crown should apply to the 
-    // highest Mehir Lamishtaken apartment available in the building, NOT the true
-    // architectural top floor (which are often unpriced Free Market penthouses).
-    // Therefore, buildingMaxFloors MUST be calculated from processedData (which 
-    // already filtered out price=0 apartments), NOT the full apartmentData.
+    // === V15 FIX: True Architectural Top Floor computation ===
+    // User specifically requested that the "Top Floor" crown should ONLY apply 
+    // if the apartment is on the TRUE architectural top floor of the building
+    // (based on the full G4 dataset, including unpriced Free Market penthouses).
+    // Therefore, buildingMaxFloors MUST be calculated from rawData.
     const buildingMaxFloors = {};
-    processedData.forEach(apt => {
-        const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        if (!buildingMaxFloors[apt.building] || floorNum > buildingMaxFloors[apt.building]) {
-            buildingMaxFloors[apt.building] = floorNum;
+    rawData.forEach(item => {
+        const floor = String(item.floor || '');
+        const floorNum = (floor === 'קרקע' || floor === 'עקרק') ? 0 : (parseInt(floor) || 0);
+        const building = item.building || '';
+        if (building && (!buildingMaxFloors[building] || floorNum > buildingMaxFloors[building])) {
+            buildingMaxFloors[building] = floorNum;
         }
     });
     processedData.forEach(apt => {
