@@ -39,13 +39,14 @@
                 </div>
                 <div id="stats-area"
                     style="white-space: nowrap; flex-shrink: 0; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem;">
-                    <button onclick="document.getElementById('user-selector-modal').style.display='flex'"
-                        class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                        <i class="fa-solid fa-user-gear"></i> <span id="current-user-display">פרופיל</span>
-                    </button>
                     <span id="count-display">0</span> דירות
                 </div>
                 <div style="display:flex; gap: 0.4rem; align-items:center; flex-shrink: 0;">
+                    <button onclick="document.getElementById('user-selector-modal').style.display='flex'"
+                        class="btn-secondary" style="padding: 0.5rem 0.65rem;" title="פרופיל">
+                        <i class="fa-solid fa-user-gear"></i> <span id="current-user-display"
+                            class="btn-label">פרופיל</span>
+                    </button>
                     <button id="theme-toggle" onclick="toggleTheme()" class="btn-secondary" title="שינוי יום/לילה"
                         style="padding:0.5rem 0.65rem;"><i class="fa-solid fa-moon"></i></button>
                     <button onclick="addToCalendar()" class="btn-secondary" title="הוסף יום הבחירה ליומן"
@@ -226,8 +227,8 @@
     </div>
 
     <!-- User Selection Modal (V6 Cloud Sync) -->
-    <div id="user-selector-modal" class="modal right-drawer-modal" style="display: none;">
-        <div class="modal-content glass-panel user-drawer">
+    <div id="user-selector-modal" class="modal" style="display: none; background: rgba(15, 23, 42, 0.9);">
+        <div class="modal-content glass-panel" style="text-align: center; padding: 2rem; max-width: 450px;">
             <h2 style="margin-bottom: 0.5rem;">מי משתמש באפליקציה? 🏠</h2>
             <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">הבחירות שלכם יסונכרנו בזמן אמת
             </p>

@@ -252,9 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function checkUser() {
-        if (!window.currentUser) {
-            document.getElementById('user-selector-modal').style.display = 'flex';
-        } else {
+        // Always show the modal initially on page load as requested
+        document.getElementById('user-selector-modal').style.display = 'flex';
+
+        if (window.currentUser) {
             // Restore display name on reload
             const names = { me: 'אלכס', wife: 'אנה', advisor: 'איליה' };
             const el = document.getElementById('current-user-display');
