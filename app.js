@@ -56,16 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === V13: Hardcoded isTopFloor computation based on raw G4 data ===
-    const REAL_BUILDING_FLOORS = {
-        "10R": 3, "11R": 3, "12R": 3, "13R": 3, "14R": 3, "15R": 3, "16R": 3,
-        "1T": 4, "2R": 5, "3T": 4, "4R": 4, "5R": 4, "6T": 3, "7P": 3, "8R": 3, "9R": 3
-    };
-
+    // === Dynamic isTopFloor computation ===
+    // V13 cross-check confirmed: G4 max floors == App max floors for ALL 16 buildings.
+    // The ML dataset contains apartments on every real top floor, so dynamic calc is correct.
+    const buildingMaxFloors = {};
     processedData.forEach(apt => {
         const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        const maxFloor = REAL_BUILDING_FLOORS[apt.building] || 0;
-        apt.isTopFloor = floorNum > 0 && floorNum === maxFloor;
+        if (!buildingMaxFloors[apt.building] || floorNum > buildingMaxFloors[apt.building]) {
+            buildingMaxFloors[apt.building] = floorNum;
+        }
+    });
+    processedData.forEach(apt => {
+        const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
+        apt.isTopFloor = floorNum > 0 && floorNum === buildingMaxFloors[apt.building];
     });
 
     // V13: Rank apartments by price (1 = cheapest, N = most expensive)
