@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Table Header with images
         html += `<div style="overflow-x:auto;"><table class="compare-table"><thead><tr><th style="width:20%;">שדה</th>`;
         html += apts.map(a => {
-            const imgPath = `floorplans_v11/${a.imageFile}`;
+            const imgPath = `floorplans/${a.imageFile}`;
             return `<th style="width:${colWidth};text-align:center;">
                 טיפוס ${a.aptType}<br><small>מבנה ${a.building}/ד' ${a.aptText}</small><br>
                 <img src="${imgPath}" alt="שרטוט ${a.aptType}" onclick="openImageViewer('${a.id}')" title="לחץ להגדלת שרטוט" onerror="this.style.display='none'">
@@ -1018,7 +1018,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Use exact D4 parsed mapping directly
-        viewerImage.src = `floorplans_v11/${apt.imageFile}`;
+        viewerImage.src = `floorplans/${apt.imageFile}`;
 
         // Reset zoom state
         scale = 1;
