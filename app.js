@@ -3,10 +3,8 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js').catch(() => { });
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
-    // State
-    // Format apartmentsData keys since CSV had Hebrew headers. The parsed JS keys might be Hebrew.
-    console.log("Raw Data Loaded:", apartmentsData.length, "items");
 
     // Safe localStorage wrapper for local files
     const safeGetItem = (key) => {
@@ -18,114 +16,143 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (e) { console.warn("Local storage blocked"); }
     };
 
-    // Exact apartment type codes from the catalog table (4th column from right)
-    // Key: "building-apartment" → catalog type code
-    const APT_TYPE_MAP = {
-        // === מגרש 103 ===
-        // 7P
-        '7P-1': 'A', '7P-2': 'C', '7P-3': 'A 1', '7P-4': 'C 4',
-        '7P-5': 'A 5', '7P-6': 'C 6', '7P-7': 'D1',
-        // 8R
-        '8R-1': 'A+', '8R-2': 'C 1', '8R-3': 'A 2', '8R-4': 'C 5',
-        '8R-5': 'A 5', '8R-6': 'C 7', '8R-7': 'D1',
-        // 9R
-        '9R-1': 'C-', '9R-2': 'B', '9R-3': 'A 3', '9R-4': 'B-',
-        '9R-5': 'A 6', '9R-6': 'B- 1', '9R-7': 'D',
-        // 10R
-        '10R-1': 'B 1', '10R-2': 'A+ 1', '10R-3': 'B-', '10R-4': 'A 2',
-        '10R-5': 'B- 1', '10R-6': 'A 5', '10R-7': 'D',
-        // 11R
-        '11R-1': 'A+ 1', '11R-2': 'B 1', '11R-3': 'A 2', '11R-4': 'B-',
-        '11R-5': 'A 5', '11R-6': 'B- 1', '11R-7': 'D',
-        // 12R
-        '12R-1': 'B 2', '12R-2': 'C- 1', '12R-3': 'B-', '12R-4': 'A 3',
-        '12R-5': 'B- 1', '12R-6': 'A 6', '12R-7': 'D2',
-        // 13R
-        '13R-1': 'C 2', '13R-2': 'A+ 2', '13R-3': 'C 5', '13R-4': 'A 2',
-        '13R-5': 'C 7', '13R-6': 'A 5', '13R-7': 'D1',
-        // 14R
-        '14R-1': 'A+ 3', '14R-2': 'C 3', '14R-3': 'A 2', '14R-4': 'C 5',
-        '14R-5': 'A 5', '14R-6': 'C 7', '14R-7': 'D1',
-        // 15R
-        '15R-1': 'C- 2', '15R-2': 'B 3', '15R-3': 'A 3', '15R-4': 'B-',
-        '15R-5': 'A 6', '15R-6': 'B- 1', '15R-7': 'D',
-        // 16R
-        '16R-1': 'B 4', '16R-2': 'A+ 4', '16R-3': 'B-', '16R-4': 'A 2',
-        '16R-5': 'B- 1', '16R-6': 'A 5', '16R-7': 'D',
-        // === מגרש 102 (לפי נספח ג'4) ===
-        // 1T
-        '1T-1': 'C', '1T-2': 'E', '1T-3': 'C 1', '1T-4': 'E 1',
-        '1T-5': 'C 2', '1T-6': 'E 2', '1T-7': 'C 1', '1T-8': 'E 1', '1T-9': 'D',
-        // 2R
-        '2R-1': 'A', '2R-2': 'B', '2R-3': 'A 1', '2R-4': 'B 1',
-        '2R-5': 'A 2', '2R-6': 'B 2', '2R-7': 'A 4', '2R-8': 'B 3',
-        '2R-9': 'A 2', '2R-10': 'B 2', '2R-11': 'D3',
-        // 3T
-        '3T-1': 'E 3', '3T-2': 'C 3', '3T-3': 'E 1', '3T-4': 'C 1',
-        '3T-5': 'E 2', '3T-6': 'C 2', '3T-7': 'E 1', '3T-8': 'C 1', '3T-9': 'D',
-        // 4R
-        '4R-1': 'B 4', '4R-2': 'A 5', '4R-3': 'B 1', '4R-4': 'A 1',
-        '4R-5': 'B 2', '4R-6': 'A 2', '4R-7': 'B 3', '4R-8': 'A 4', '4R-9': 'D3',
-        // 5R (חלקי/מוערך - התחלה A 6)
-        '5R-1': 'A 6', '5R-2': 'B 4', '5R-3': 'A 2', '5R-4': 'B 2',
-        '5R-5': 'A 4', '5R-6': 'B 3', '5R-7': 'A 2', '5R-8': 'B 2', '5R-9': 'D3',
-        // 6T (הערכה עד לקבלת העמוד הבא)
-        '6T-1': 'E 3', '6T-2': 'C 3', '6T-3': 'E 1', '6T-4': 'C 1',
-        '6T-5': 'E 2', '6T-6': 'C 2', '6T-7': 'D',
-    };
 
-    function getAptType(building, aptNum) {
-        const key = `${building}-${aptNum}`;
-        return APT_TYPE_MAP[key] || '?';
-    }
+    // V12 data uses: lot, building, aptNum, floor, rooms, area, balcony, storage, direction, price, type, imageFile
+    // Also has V11-style fields: id, rank, isLast, sunDir, parkingDist, aptType (from data_v11.js rebuild)
+    const rawData = (typeof apartmentData !== 'undefined') ? apartmentData :
+        (typeof apartmentsDataV11 !== 'undefined') ? apartmentsDataV11 : [];
+    console.log("Raw Data Loaded:", rawData.length, "items");
 
-    // Mapping between apartment catalog type and PDF page number
-    // V7B: Architecture changed from generic type to Lot-specific type.
-    // Example: PDF_PAGE_MAP['102']['C'] = 13 (Needs filling with correct pages from actual catalog)
-    const PDF_PAGE_MAP = {
-        '102': {
-            'A': null, 'A 1': null, 'A 2': null, 'A 4': null, 'A 5': null, 'A 6': null,
-            'B': null, 'B 1': null, 'B 2': null, 'B 3': null, 'B 4': null,
-            'C': null, 'C 1': null, 'C 2': null, 'C 3': null,
-            'E': null, 'E 1': null, 'E 2': null, 'E 3': null,
-            'D': null, 'D3': null
-        },
-        '103': {
-            'A': null, 'A+': null, 'A+ 1': null, 'A+ 2': null, 'A+ 3': null, 'A+ 4': null,
-            'A 1': null, 'A 2': null, 'A 3': null, 'A 5': null, 'A 6': null,
-            'B': null, 'B-': null, 'B- 1': null, 'B 1': null, 'B 2': null, 'B 3': null, 'B 4': null,
-            'C': null, 'C-': null, 'C- 1': null, 'C- 2': null,
-            'C 1': null, 'C 2': null, 'C 3': null, 'C 4': null, 'C 5': null, 'C 6': null, 'C 7': null,
-            'D': null, 'D1': null, 'D2': null
+    // Normalize data — support both V11 and V12 schemas
+    let processedData = rawData.map((item, idx) => {
+        const price = typeof item.price === 'string' ?
+            (parseInt(item.price.replace(/[^\d]/g, '')) || 0) : (item.price || 0);
+
+        return {
+            id: item.id || `${item.aptNum}-${item.building}`,
+            rank: item.rank || (idx + 1),
+            lot: String(item.lot),
+            building: item.building,
+            aptText: item.aptText || String(item.aptNum),
+            floor: item.floor,
+            rooms: String(item.rooms),
+            area: item.area,
+            balcony: item.balcony || 0,
+            storage: item.storage || 0,
+            sun: item.sunDir || item.direction || '',
+            sunDir: item.sunDir || item.direction || '',
+            distance: item.parkingDist || item.distance || '12',
+            parkingDist: item.parkingDist || item.distance || '12',
+            price: price,
+            aptType: item.aptType || item.type || '',
+            imageFile: `floorplan_${item.lot}_${item.aptType || item.type || 'C'}.png`,
+            isTopFloor: item.isLast || false,
+            status: 'available'
+        };
+    }).filter(apt => apt.price > 0); // Filter out apartments with no price
+
+    // Restore saved statuses
+    processedData.forEach(apt => {
+        apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
+    });
+
+    // === Dynamic isTopFloor computation ===
+    // For each building, find the max numeric floor and mark those apartments
+    const buildingMaxFloors = {};
+    processedData.forEach(apt => {
+        const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
+        if (!buildingMaxFloors[apt.building] || floorNum > buildingMaxFloors[apt.building]) {
+            buildingMaxFloors[apt.building] = floorNum;
         }
-    };
+    });
+    processedData.forEach(apt => {
+        const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
+        apt.isTopFloor = floorNum > 0 && floorNum === buildingMaxFloors[apt.building];
+    });
 
-    function getPdfPageUrl(apt) {
-        // Base URL to the PDF
-        const baseUrl = "../קטלוג-משתכן-רמת-רבין.pdf";
-        if (!apt) return baseUrl;
+    // V13: Rank apartments by price (1 = cheapest, N = most expensive)
+    processedData.sort((a, b) => a.price - b.price);
+    processedData.forEach((apt, i) => { apt.rank = i + 1; });
 
-        const lotMap = PDF_PAGE_MAP[apt.lot];
-        if (lotMap && lotMap[apt.aptType]) {
-            return `${baseUrl}#page=${lotMap[apt.aptType]}`;
-        }
-        return baseUrl;
+    // V3: Add pricePerSqm as primary metric and calculate dealScore
+    processedData.forEach(apt => {
+        apt.pricePerSqm = apt.area ? Math.round(apt.price / apt.area) : 0;
+
+        // Calculate deal score based on rank (1 is best, max rank is ~124)
+        let rawScore = 100 - ((apt.rank - 1) * (100 / processedData.length));
+        apt.dealScore = apt.rank === 999 ? 0 : Math.max(1, Math.round(rawScore));
+    });
+    window.processedData = processedData;
+
+
+
+    // === V11 Data Integration: No longer using hardcoded APT_TYPE_MAP as data_v11.js is fully extracted directly from the D4 CSV.
+
+    // === V14: PER-USER FAVORITES SYSTEM ===
+    function getUserFavs(userId) {
+        return new Set(JSON.parse(safeGetItem(`apt_favorites_${userId || 'me'}`) || '[]'));
     }
+    function saveUserFavs(userId, favSet) {
+        safeSetItem(`apt_favorites_${userId || 'me'}`, JSON.stringify([...favSet]));
+    }
+    const oldFavs = JSON.parse(safeGetItem('apt_favorites') || '[]');
+    if (oldFavs.length > 0) {
+        const migrated = getUserFavs('me');
+        oldFavs.forEach(id => migrated.add(id));
+        saveUserFavs('me', migrated);
+        safeSetItem('apt_favorites', '[]');
+    }
+    function getFavorites() { return getUserFavs(window.currentUser || 'me'); }
+    let favorites = getFavorites();
 
-    // === BETA v2: FAVORITES SYSTEM ===
-    let favorites = new Set(JSON.parse(safeGetItem('apt_favorites') || '[]'));
-    const saveFavorites = () => safeSetItem('apt_favorites', JSON.stringify([...favorites]));
     window.toggleFavorite = function (id, e) {
         e.stopPropagation();
-        if (favorites.has(id)) favorites.delete(id);
-        else favorites.add(id);
-        saveFavorites();
+        const userId = window.currentUser || 'me';
+        const userFavs = getUserFavs(userId);
+        if (userFavs.has(id)) userFavs.delete(id);
+        else userFavs.add(id);
+        saveUserFavs(userId, userFavs);
+        favorites = userFavs;
 
-        // V6: Sync to Cloud
         if (window.syncFavorite && window.currentUser) {
-            window.syncFavorite(id, window.currentUser, favorites.has(id));
+            window.syncFavorite(id, window.currentUser, userFavs.has(id));
         }
 
+        renderData();
+    };
+
+    // Modal-specific favorite toggle: updates button + user indicators in modal
+    window.modalToggleFav = function (id, e) {
+        e.stopPropagation();
+        const userId = window.currentUser || 'me';
+        const userFavs = getUserFavs(userId);
+        if (userFavs.has(id)) userFavs.delete(id);
+        else userFavs.add(id);
+        saveUserFavs(userId, userFavs);
+        favorites = userFavs;
+        if (window.syncFavorite && window.currentUser) {
+            window.syncFavorite(id, window.currentUser, userFavs.has(id));
+        }
+        // Update modal button
+        const btn = document.getElementById('modal-fav-btn');
+        if (btn) {
+            const isFav = userFavs.has(id);
+            btn.innerHTML = isFav
+                ? '<i class="fa-solid fa-heart" style="color:#ef4444"></i> הסר מועדף'
+                : '<i class="fa-regular fa-heart"></i> הוסף למועדפים';
+        }
+        // Update modal user indicators
+        const usersDiv = document.getElementById('modal-fav-users');
+        if (usersDiv) {
+            const uc = [
+                { id: 'me', icon: 'fa-user-tie', color: 'var(--primary)', name: 'אלכס' },
+                { id: 'wife', icon: 'fa-user-nurse', color: '#ec4899', name: 'אנה' },
+                { id: 'advisor', icon: 'fa-user-secret', color: '#10b981', name: 'איליה' }
+            ];
+            usersDiv.innerHTML = uc.filter(u => getUserFavs(u.id).has(id)).map(u =>
+                '<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.25rem 0.6rem;border-radius:20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);font-size:0.8rem;"><i class="fa-solid ' + u.icon + '" style="color:' + u.color + '"></i><span style="color:' + u.color + ';font-weight:600">' + u.name + '</span></span>'
+            ).join('');
+        }
         renderData();
     };
 
@@ -148,40 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.getNote = (id) => safeGetItem(`note_${id}`) || '';
 
-    let processedData = apartmentsData.map(item => {
-        // Map Hebrew CSV headers to standard object keys
-        return {
-            id: String(item['דירה']).trim() + '-' + String(item['מבנה']).trim(),
-            rank: parseInt(item['דירוג']) || 999,
-            building: String(item['מבנה']).trim(),
-            aptText: String(item['דירה']).trim(),
-            floor: String(item['קומה']).trim(),
-            rooms: String(item['חדרים']).trim(),
-            area: parseFloat(item['שטח']) || 0,
-            balcony: parseFloat(item['מרפסת']) || 0,
-            storage: parseFloat(item['מחסן']) || 0,
-            sun: String(item['חמה/קרירה']).trim(),
-            distance: parseInt(item['מרחק חניה']) || 0,
-            price: parseInt(item['מחיר']) || 0,
-            isTopFloor: item['אחרונה?'] === 'כן',
-            status: safeGetItem(`apt_${item['דירה']}_${item['מבנה']}`) || 'available',
-            aptType: getAptType(String(item['מבנה']).trim(), String(item['דירה']).trim()),
-            lot: String(item['מגרש']).trim()
-        };
-    });
 
-    // V3: Add pricePerSqm as primary metric and calculate dealScore
-    processedData.forEach(apt => {
-        apt.pricePerSqm = apt.area ? Math.round(apt.price / apt.area) : 0;
-
-        // Calculate deal score based on rank (1 is best, max rank is ~124)
-        // A rank of 1 gives a score of 100. A rank of 124 gives a score of ~1.
-        let rawScore = 100 - ((apt.rank - 1) * (100 / 124));
-        apt.dealScore = apt.rank === 999 ? 0 : Math.max(1, Math.round(rawScore));
-    });
-    window.processedData = processedData;
-
-
+    // (V12 data already processed above)
 
     // Populate Filters
     const populateFilters = () => {
@@ -247,14 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
     window.setUser = function (userId) {
         safeSetItem('selected_user', userId);
         window.currentUser = userId;
+        favorites = getUserFavs(userId);
         document.getElementById('user-selector-modal').style.display = 'none';
-        showToast('פרופיל עודכן - הסנכרון פעיל', 'success');
-        renderData(); // Refresh cards to show cloud favorites
+        const names = { me: 'אלכס', wife: 'אנה', advisor: 'איליה' };
+        const el = document.getElementById('current-user-display');
+        if (el) el.textContent = names[userId] || userId;
+        showToast(`שלום ${names[userId] || userId}!`, 'success');
+        renderData();
     };
 
     function checkUser() {
         if (!window.currentUser) {
             document.getElementById('user-selector-modal').style.display = 'flex';
+        } else {
+            // Restore display name on reload
+            const names = { me: 'אלכס', wife: 'אנה', advisor: 'איליה' };
+            const el = document.getElementById('current-user-display');
+            if (el) el.textContent = names[window.currentUser] || window.currentUser;
         }
     }
     setTimeout(checkUser, 1000);
@@ -332,6 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterBuilding) filterBuilding.addEventListener('change', renderData);
     if (filterFloor) filterFloor.addEventListener('change', renderData);
     if (filterTopFloor) filterTopFloor.addEventListener('change', renderData);
+    const filterMiddle2 = document.getElementById('filter-middle-floor');
+    if (filterMiddle2) filterMiddle2.addEventListener('change', renderData);
+    const filterNoGround = document.getElementById('filter-no-ground');
+    if (filterNoGround) filterNoGround.addEventListener('change', renderData);
+    const favUserDropdown = document.getElementById('filter-fav-user');
+    if (favUserDropdown) favUserDropdown.addEventListener('change', renderData);
     if (searchInput) searchInput.addEventListener('input', renderData);
     const showFavsEl = document.getElementById('show-favs-only');
     if (showFavsEl) showFavsEl.addEventListener('change', renderData);
@@ -351,6 +361,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filterBuilding) filterBuilding.value = 'all';
         if (filterFloor) filterFloor.value = 'all';
         if (filterTopFloor) filterTopFloor.checked = false;
+        const midFloor = document.getElementById('filter-middle-floor');
+        if (midFloor) midFloor.checked = false;
+        const noGround = document.getElementById('filter-no-ground');
+        if (noGround) noGround.checked = false;
+        const favUser = document.getElementById('filter-fav-user');
+        if (favUser) favUser.value = 'all';
+        const showFavs = document.getElementById('show-favs-only');
+        if (showFavs) showFavs.checked = false;
         renderData();
     });
 
@@ -366,8 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let filtered = processedData.filter(apt => {
             if (rooms !== 'all' && apt.rooms.toString() !== rooms) return false;
-            // Handle edge case like "4 גן" -> "4"
-            if (rooms !== 'all' && !apt.rooms.toString().includes(rooms)) return false;
 
             if (apt.price < minPrice || apt.price > maxPrice) return false;
             if (sun !== 'all' && apt.sun !== sun) return false;
@@ -383,6 +399,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
                 if (floorNum === 0 || apt.isTopFloor) return false;
             }
+
+            // === V14: NO GROUND FLOOR FILTER ===
+            const noGroundEl = document.getElementById('filter-no-ground');
+            if (noGroundEl && noGroundEl.checked && apt.floor === 'קרקע') return false;
 
             // === ROUND 2: TEXT SEARCH ===
             if (searchQ) {
@@ -425,9 +445,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // === BETA v2: Update Stats Bar ===
         const showFavsOnly = document.getElementById('show-favs-only')?.checked;
-        const displayList = showFavsOnly ? filtered.filter(a => favorites.has(a.id)) : filtered;
-        if (showFavsOnly) {
-            filtered = displayList;
+        const favUserFilter = document.getElementById('filter-fav-user')?.value || 'all';
+
+        if (showFavsOnly || favUserFilter !== 'all') {
+            filtered = filtered.filter(a => {
+                if (favUserFilter !== 'all') {
+                    const userFavs = getUserFavs(favUserFilter);
+                    return userFavs.has(a.id);
+                }
+                return favorites.has(a.id);
+            });
         }
 
         // Stats bar removed in V5
@@ -460,21 +487,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const inCompare = compareList.has(apt.id);
             const pricePerSqm = apt.area ? Math.round(apt.price / apt.area) : 0;
 
+            const favByUsers = [];
+            const userConfigs = [
+                { id: 'me', icon: 'fa-user-tie', color: 'var(--primary)', name: 'אלכס' },
+                { id: 'wife', icon: 'fa-user-nurse', color: '#ec4899', name: 'אנה' },
+                { id: 'advisor', icon: 'fa-user-secret', color: '#10b981', name: 'איליה' }
+            ];
+            userConfigs.forEach(u => {
+                if (getUserFavs(u.id).has(apt.id)) {
+                    favByUsers.push(`<span style="display:inline-flex; align-items:center; gap:0.15rem;"><i class="fa-solid ${u.icon}" style="font-size:0.7rem; color:${u.color}"></i><span style="font-size:0.7rem; color:${u.color}; font-weight:600;">${u.name}</span></span>`);
+                }
+            });
+            const favIcons = favByUsers.length > 0 ? favByUsers.join('') : '';
+
             card.innerHTML = `
                 <div class="card-header">
                     <div style="display:flex; align-items:center; gap:0.5rem;">
                         <div class="rank-badge" title="דירוג">#${apt.rank}</div>
-                        <!-- V6: Cloud Sync Indicators -->
                         <div class="cloud-indicators" style="display:flex; gap:0.25rem;">
-                            ${window.cloudFavs && window.cloudFavs[apt.id] ? Object.keys(window.cloudFavs[apt.id]).filter(uid => window.cloudFavs[apt.id][uid]).map(uid => {
-                const config = {
-                    me: { icon: 'fa-user-tie', color: 'var(--primary)', name: 'אלכס' },
-                    wife: { icon: 'fa-user-nurse', color: '#ec4899', name: 'אנה' },
-                    advisor: { icon: 'fa-user-graduate', color: '#10b981', name: 'יועץ' }
-                };
-                const c = config[uid] || { icon: 'fa-user', color: '#ccc', name: 'משתמש' };
-                return `<i class="fa-solid ${c.icon}" style="font-size:0.75rem; color:${c.color}" title="נשמר ע״י ${c.name}"></i>`;
-            }).join('') : ''}
+                            ${favIcons}
                         </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:0.4rem;">
@@ -505,6 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button type="button" onclick="toggleFavorite('${apt.id}', event)" class="btn-outline ${isFav ? 'fav-active' : ''}" style="padding: 0.65rem 0.75rem; font-family: inherit; font-size: 0.95rem; border-radius: 8px; cursor: pointer; background: transparent;" title="מועדפים">
                         <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart" style="color:${isFav ? '#ef4444' : 'inherit'}"></i>
                     </button>
+                    ${favIcons ? `<div style="display:flex; align-items:center; gap:0.2rem; padding:0.3rem 0.5rem; border-radius:8px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.15);" title="סימנו כמועדף">${favIcons}</div>` : ''}
                     <button type="button" onclick="toggleCompare('${apt.id}', event)" class="btn-outline ${inCompare ? 'compare-active' : ''}" style="padding: 0.65rem 0.75rem; font-family: inherit; font-size: 0.95rem; border-radius: 8px; cursor: pointer; background: ${inCompare ? 'rgba(79,70,229,0.3)' : 'transparent'};" title="השוואה">
                         <i class="fa-solid fa-scale-balanced"></i>
                     </button>
@@ -601,8 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Table Header with images
         html += `<div style="overflow-x:auto;"><table class="compare-table"><thead><tr><th style="width:20%;">שדה</th>`;
         html += apts.map(a => {
-            const safeName = a.aptType.replace(/\+/g, '+').replace(/\-/g, '-').replace(/ /g, '_');
-            const imgPath = `floorplans/floorplan_${a.lot}_${safeName}.png`;
+            const imgPath = `floorplans_v11/${a.imageFile}`;
             return `<th style="width:${colWidth};text-align:center;">
                 טיפוס ${a.aptType}<br><small>מבנה ${a.building}/ד' ${a.aptText}</small><br>
                 <img src="${imgPath}" alt="שרטוט ${a.aptType}" onclick="openImageViewer('${a.id}')" title="לחץ להגדלת שרטוט" onerror="this.style.display='none'">
@@ -666,6 +697,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     מבנה ${apt.building} | דירה ${apt.aptText} | קומה ${apt.floor} | ${apt.rooms} חדרים | ${apt.area} מ"ר
                 </div>
                 <div style="font-size: 1.8rem; font-weight: bold; color: var(--accent); margin-top: 0.75rem;">${formatPrice(price)} ₪</div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:0.75rem; margin-top: 1rem; flex-wrap:wrap;">
+                    <button type="button" id="modal-fav-btn" onclick="modalToggleFav('${apt.id}', event)" style="padding:0.5rem 1rem; border-radius:8px; border:1px solid var(--panel-border); background:transparent; cursor:pointer; font-family:inherit; font-size:0.95rem; color:var(--text-main); display:flex; align-items:center; gap:0.3rem;">
+                        ${getUserFavs(window.currentUser || 'me').has(apt.id) ? '<i class="fa-solid fa-heart" style="color:#ef4444"></i> הסר מועדף' : '<i class="fa-regular fa-heart"></i> הוסף למועדפים'}
+                    </button>
+                    <div id="modal-fav-users" style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                        ${[{ id: 'me', icon: 'fa-user-tie', color: 'var(--primary)', name: 'אלכס' }, { id: 'wife', icon: 'fa-user-nurse', color: '#ec4899', name: 'אנה' }, { id: 'advisor', icon: 'fa-user-secret', color: '#10b981', name: 'איליה' }].filter(u => getUserFavs(u.id).has(apt.id)).map(u => `<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.25rem 0.6rem;border-radius:20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);font-size:0.8rem;"><i class="fa-solid ${u.icon}" style="color:${u.color}"></i><span style="color:${u.color};font-weight:600">${u.name}</span></span>`).join('')}
+                    </div>
+                </div>
             </div>
             <div class="financing-grid">
                 <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
@@ -877,7 +916,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const buildings = [...new Set(processedData.map(a => a.building))].sort();
         const floorOrder = [...new Set(processedData.map(a => a.floor))].sort((a, b) => {
             if (a === 'קרקע') return 1;
-            if (b === 'קרקע') return 1;
+            if (b === 'קרקע') return -1;
             return parseInt(b) - parseInt(a);
         });
 
@@ -977,9 +1016,8 @@ document.addEventListener('DOMContentLoaded', () => {
             viewerTitle.innerHTML = `<div><i class="fa-solid fa-map"></i> טיפוס ${apt.aptType.replace(' ', '')}</div><div style="font-size: 0.85rem; color: #ccc; margin-top: 2px;">מתחם ${apt.lot} | שרטוט ייעודי לדגם זה</div>`;
         }
 
-        // Sanitize string to match what we downloaded (Lot + Type)
-        const safeName = apt.aptType.replace(/[^a-zA-Z0-9\+\-]/g, '_');
-        viewerImage.src = `floorplans/floorplan_${apt.lot}_${safeName}.png`;
+        // Use exact D4 parsed mapping directly
+        viewerImage.src = `floorplans_v11/${apt.imageFile}`;
 
         // Reset zoom state
         scale = 1;
@@ -1084,13 +1122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTransform();
         }, { passive: false });
 
-        // Docs Modal
-        const docsModal = document.getElementById('docs-modal');
-        const docsBtn = document.getElementById('docs-btn');
-        const docsCloseSpan = document.querySelector('.close-modal');
 
-        docsBtn.onclick = () => docsModal.classList.add('visible');
-        docsCloseSpan.onclick = () => docsModal.classList.remove('visible');
 
         // Specs Modal
         const specsModal = document.getElementById('specs-modal');
@@ -1106,7 +1138,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (aptCloseSpan) aptCloseSpan.onclick = () => aptModal.classList.remove('visible');
 
         window.onclick = (e) => {
-            if (e.target == docsModal) docsModal.classList.remove('visible');
             if (e.target == specsModal) specsModal.classList.remove('visible');
             if (e.target == aptModal) aptModal.classList.remove('visible');
             if (e.target == viewerContainer) viewerModal.style.display = 'none';
@@ -1116,18 +1147,43 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     initModals();
 
-    // === BETA v2: COUNTDOWN TIMER ===
+    // === BETA v2: COUNTDOWN TIMER / POST-SELECTION PAYMENT TRACKER ===
     function updateCountdown() {
         const target = new Date('2026-03-10T09:00:00+02:00');
         const now = new Date();
         const diff = target - now;
         const el = document.getElementById('countdown-timer');
         if (!el) return;
-        if (diff <= 0) { el.textContent = '🎉 האירוע הגיע!'; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        el.textContent = `${d} ימים, ${h} שעות, ${m} דק' עד לבחירת הדירה ⏱️`;
+
+        if (diff > 0) {
+            // Pre-selection: show countdown
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            el.textContent = `${d} ימים, ${h} שעות, ${m} דק' עד לבחירת הדירה ⏱️`;
+        } else {
+            // Post-selection: show next payment date
+            const payments = [
+                { date: '2026-03-10', label: 'דמי רצינות', pct: '2,000₪' },
+                { date: '2026-03-24', label: 'חתימת חוזה (7%)', pct: '7%' },
+                { date: '2026-05-07', label: 'תשלום שלישי (13%)', pct: '13%' },
+                { date: '2026-10-31', label: 'תשלום 10%', pct: '10%' },
+                { date: '2027-03-31', label: 'תשלום 10%', pct: '10%' },
+                { date: '2027-08-31', label: 'תשלום 10%', pct: '10%' },
+                { date: '2028-01-31', label: 'תשלום 10%', pct: '10%' },
+                { date: '2028-06-30', label: 'תשלום 10%', pct: '10%' },
+                { date: '2028-12-31', label: 'תשלום 10%', pct: '10%' },
+                { date: '2029-06-30', label: 'תשלום 10%', pct: '10%' },
+                { date: '2030-03-01', label: 'מסירה (10% אחרון)', pct: '10%' }
+            ];
+            const next = payments.find(p => new Date(p.date) > now);
+            if (next) {
+                const daysUntil = Math.ceil((new Date(next.date) - now) / 86400000);
+                el.innerHTML = `💰 ${next.label} — <strong>${next.pct}</strong> | בעוד ${daysUntil} ימים (${next.date.split('-').reverse().join('.')})`;
+            } else {
+                el.textContent = '🏠 כל התשלומים הושלמו — מזל טוב!';
+            }
+        }
     }
     updateCountdown();
     setInterval(updateCountdown, 60000);

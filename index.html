@@ -50,8 +50,7 @@
                         style="padding:0.5rem 0.65rem;"><i class="fa-solid fa-moon"></i></button>
                     <button onclick="addToCalendar()" class="btn-secondary" title="הוסף יום הבחירה ליומן"
                         style="padding:0.5rem 0.65rem;"><i class="fa-regular fa-calendar-plus"></i></button>
-                    <button id="docs-btn" class="btn-secondary" title="מסמכים להורדה"><i
-                            class="fa-solid fa-folder-open"></i> <span class="btn-label">מסמכים</span></button>
+
                     <button id="specs-btn" class="btn-secondary" title="מפרט טכני"><i
                             class="fa-solid fa-clipboard-list"></i> <span class="btn-label">מפרט</span></button>
                 </div>
@@ -142,11 +141,16 @@
 
                 <div class="filter-group">
                     <label>סנן לפי סטטוס</label>
-                    <div class="status-toggle">
-                        <input type="checkbox" id="show-favs-only">
-                        <label for="show-favs-only">❤️ מועדפים בלבד</label>
-                    </div>
                     <div class="status-toggle" style="margin-top: 0.5rem;">
+                        <label for="filter-fav-user" style="font-size:0.85rem; color:var(--text-muted);">סנן מועדפים
+                            לפי:</label>
+                        <select id="filter-fav-user" class="fancy-select"
+                            style="margin-top:0.25rem; font-size:0.85rem;">
+                            <option value="all">כל המשתמשים</option>
+                            <option value="me">👔 אלכס</option>
+                            <option value="wife">👩‍⚕️ אנה</option>
+                            <option value="advisor">👨‍💻 איליה</option>
+                        </select>
                         <input type="checkbox" id="filter-available" checked>
                         <label for="filter-available">הצג רק פנויות</label>
                     </div>
@@ -157,6 +161,10 @@
                     <div class="status-toggle" style="margin-top: 0.5rem;">
                         <input type="checkbox" id="filter-middle-floor">
                         <label for="filter-middle-floor">רק קומות ביניים</label>
+                    </div>
+                    <div class="status-toggle" style="margin-top: 0.5rem;">
+                        <input type="checkbox" id="filter-no-ground">
+                        <label for="filter-no-ground">ללא קומת קרקע</label>
                     </div>
                 </div>
 
@@ -239,21 +247,18 @@
                     <span style="font-weight: 600;">אנה</span>
                 </button>
 
-                <!-- Profile Advisor (Editable) -->
-                <div
-                    style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid var(--panel-border);">
-                    <i class="fa-solid fa-user-graduate" style="font-size: 1.5rem; color: #10b981; flex-shrink: 0;"></i>
-                    <input type="text" id="advisor-name-input" class="fancy-input"
-                        style="flex: 1; margin: 0; padding: 0.5rem; background: transparent; border: none; font-size: 1rem;"
-                        placeholder="שם היועץ..." value="יועץ">
-                    <button onclick="setUser('advisor')" class="btn-primary"
-                        style="padding: 0.5rem 1rem; border-radius: 8px;">בחר</button>
-                </div>
+                <!-- Profile Ilya -->
+                <button onclick="setUser('advisor')" class="btn-secondary"
+                    style="display: flex; align-items: center; justify-content: flex-start; gap: 1rem; padding: 1rem; width: 100%;">
+                    <i class="fa-solid fa-user-secret" style="font-size: 1.5rem; color: #10b981;"></i>
+                    <span style="font-weight: 600;">איליה</span>
+                </button>
             </div>
-
-            <button onclick="document.getElementById('user-selector-modal').style.display='none'" class="btn-secondary"
-                style="margin-top: 2rem; width: 100%; color: var(--text-muted);">סגור</button>
         </div>
+
+        <button onclick="document.getElementById('user-selector-modal').style.display='none'" class="btn-secondary"
+            style="margin-top: 2rem; width: 100%; color: var(--text-muted);">סגור</button>
+    </div>
     </div>
 
     <!-- Specs Modal -->
@@ -288,44 +293,7 @@
         </div>
     </div>
 
-    <!-- Documents Modal -->
-    <div id="docs-modal" class="modal">
-        <div class="modal-content glass-panel">
-            <span class="close-modal">&times;</span>
-            <h2><i class="fa-solid fa-file-pdf"></i> מסמכי הפרויקט</h2>
-            <p>גישה מהירה לטפסים הרלוונטיים:</p>
-            <div class="docs-list">
-                <a href="docs/טופס-בחירת-דירה.pdf" target="_blank" class="doc-card">
-                    <i class="fa-regular fa-file-lines"></i>
-                    <span>טופס בחירת דירה</span>
-                </a>
-                <a href="docs/יפויי-כח-לבחירת-דירה.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-signature"></i>
-                    <span>ייפוי שוח לבחירה</span>
-                </a>
-                <a href="docs/יפויי-כח-לחתימת-הסכם.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-file-signature"></i>
-                    <span>ייפוי כוח לחתימה</span>
-                </a>
-                <a href="docs/הגרלה-2279-מפרט-חתום.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-ruler-combined"></i>
-                    <span>מפרט טכני של הבניין</span>
-                </a>
-                <a href="docs/קטלוג-משתכן-רמת-רבין.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-map"></i>
-                    <span>קטלוג פלורפלנים - רבין כרמיאל</span>
-                </a>
-                <a href="docs/הגרלה-2279-ג24-חתום.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-scroll"></i>
-                    <span>מסמך ג'4</span>
-                </a>
-                <a href="docs/לאטי-2279-הסכם-חתום.pdf" target="_blank" class="doc-card">
-                    <i class="fa-solid fa-file-contract"></i>
-                    <span>הסכם חתום</span>
-                </a>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Apartment Details Modal -->
     <div id="apt-modal" class="modal">
@@ -390,7 +358,7 @@
     </button>
 
 
-    <script src="data.js"></script>
+    <script src="data_v12.js"></script>
     <script src="app.js"></script>
     <script src="sync.js"></script>
 </body>
