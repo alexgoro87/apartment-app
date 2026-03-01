@@ -1,50 +1,68 @@
-/* === V1: BLUE GLASSMORPHISM THEME === */
+/* === V19 PREMIUM THEME: Deep Navy Glassmorphism === */
 :root {
-    /* Core Backgrounds */
-    --bg-color: #f8fafc;
-    --panel-bg: rgba(255, 255, 255, 0.85);
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --header-bg: rgba(255, 255, 255, 0.95);
-    --input-bg: rgba(241, 245, 249, 0.9);
-    --btn-sec-bg: rgba(59, 130, 246, 0.15);
-    /* light blue */
-    --btn-sec-hover: rgba(59, 130, 246, 0.25);
-    --btn-sec-text: #2563eb;
+    --font-family: 'Outfit', 'Segoe UI', sans-serif;
 
-    /* Primary Blue Accents */
+    /* Core Backgrounds - Light Mode */
+    --bg-color: #f0f4ff;
+    --panel-bg: rgba(255, 255, 255, 0.82);
+    --card-bg: rgba(255, 255, 255, 0.97);
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --input-bg: rgba(237, 242, 255, 0.9);
+    --btn-sec-bg: rgba(59, 130, 246, 0.1);
+    --btn-sec-hover: rgba(59, 130, 246, 0.22);
+    --btn-sec-text: #1d4ed8;
+
+    /* Primary Palette */
     --primary: #3b82f6;
-    /* Blue */
+    --primary-dark: #1d4ed8;
     --primary-hover: #2563eb;
+    --accent: #7c3aed;
+    --accent-light: #a78bfa;
+
     /* Text Colors */
+    --text-primary: #0f172a;
     --text-main: #0f172a;
-    --text-muted: #475569;
+    --text-muted: #64748b;
+
     /* Borders & UI Elements */
-    --panel-border: rgba(15, 23, 42, 0.1);
+    --panel-border: rgba(15, 23, 42, 0.09);
+    --card-border: rgba(15, 23, 42, 0.07);
+
     /* Status Colors */
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
-    /* Shadows for Glassmorphism */
-    --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+    /* Glassmorphism */
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0,0,0,0.04);
+    --card-shadow: 0 2px 12px rgba(59,130,246,0.07);
+
+    /* Gradient */
+    --gradient-primary: linear-gradient(135deg, #3b82f6, #7c3aed);
 }
 
-/* Support Dark Mode toggle - rich dark slate */
+
+/* Dark Mode - rich deep navy */
 [data-theme="dark"] {
-    --bg-color: #0f1117;
-    /* Very dark blue/black */
-    --panel-bg: rgba(30, 41, 59, 0.4);
-    --card-bg: rgba(30, 41, 59, 0.6);
-    --header-bg: rgba(15, 17, 23, 0.85);
-    --input-bg: rgba(30, 41, 59, 0.5);
-    --btn-sec-bg: rgba(255, 255, 255, 0.1);
-    --btn-sec-hover: rgba(255, 255, 255, 0.2);
-    --btn-sec-text: #f8fafc;
+    --bg-color: #080e1a;
+    --panel-bg: rgba(16, 28, 54, 0.72);
+    --card-bg: rgba(18, 30, 58, 0.92);
+    --header-bg: rgba(8, 14, 26, 0.95);
+    --input-bg: rgba(20, 35, 65, 0.7);
+    --btn-sec-bg: rgba(255, 255, 255, 0.07);
+    --btn-sec-hover: rgba(255, 255, 255, 0.14);
+    --btn-sec-text: #e2e8f0;
 
-    --text-main: #f8fafc;
+    --text-primary: #f1f5f9;
+    --text-main: #f1f5f9;
     --text-muted: #94a3b8;
-    --panel-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    --accent-light: #8b5cf6;
 }
+
 
 * {
     box-sizing: border-box;
@@ -60,24 +78,34 @@ body {
     overflow-x: hidden;
 }
 
+
+/* V19: Card entry animation */
+@keyframes cardEnter {
+    from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* Glassmorphism Utilities */
 .glass-header {
     background: var(--header-bg);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--panel-border);
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 .glass-panel {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
-    border-radius: 16px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    border-radius: 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     box-shadow: var(--glass-shadow);
 }
+
 
 /* Layout */
 .app-container {
@@ -212,24 +240,50 @@ input[type=range] {
     background: rgba(255, 255, 255, 0.05);
 }
 
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: opacity 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-primary:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
 .btn-secondary {
     background: var(--btn-sec-bg);
     color: var(--btn-sec-text);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.6rem 1rem;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    font-family: inherit;
 }
 
 .btn-secondary:hover {
     background: var(--btn-sec-hover);
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+
 
 /* Main Data Panel */
 .data-panel {
@@ -274,23 +328,27 @@ input[type=range] {
     border-radius: 4px;
 }
 
-/* Apartment Card */
+/* V19 Apartment Card */
 .apt-card {
     background: var(--card-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
     padding: 1.25rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s;
     position: relative;
     display: flex;
     flex-direction: column;
-    /* Removed overflow: hidden so content doesn't get clipped if it wraps */
+    box-shadow: var(--card-shadow);
+    animation: cardEnter 0.3s ease both;
 }
 
 .apt-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6);
-    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px -8px rgba(59, 130, 246, 0.22),
+                0 4px 12px rgba(0,0,0,0.1);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 .card-header {
