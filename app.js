@@ -56,15 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === V16 FIX: Bulletproof Hardcoded Top Floors ===
-    // User requested that "Top Floor" ONLY applies to the TRUE architectural
-    // top floor of the building, according to the original G4 dataset (all 124 apts).
-    // Dynamic calculation is prone to errors when data is filtered. We hardcode
-    // the absolute truth here as generated directly from the D4/G4 documents.
-    const ARCHITECTURAL_TOP_FLOORS = {
-        '10R': 3, '11R': 3, '12R': 3, '13R': 3, '14R': 3, '15R': 3, '16R': 3,
-        '1T': 4, '2R': 5, '3T': 4, '4R': 4, '5R': 4, '6T': 3, '7P': 3, '8R': 3, '9R': 3
-    };
+    // === V18: Read top floors from config.js ===
+    const ARCHITECTURAL_TOP_FLOORS = (typeof PROJECT_CONFIG !== 'undefined' && PROJECT_CONFIG.architecturalTopFloors)
+        ? PROJECT_CONFIG.architecturalTopFloors
+        : { // Fallback: generated from G4 analysis
+            '10R': 3, '11R': 3, '12R': 3, '13R': 3, '14R': 3, '15R': 3, '16R': 3,
+            '1T': 4, '2R': 5, '3T': 4, '4R': 4, '5R': 4, '6T': 3, '7P': 3, '8R': 3, '9R': 3
+        };
 
     processedData.forEach(apt => {
         const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
