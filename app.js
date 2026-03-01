@@ -56,17 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === V18: Read top floors from config.js ===
-    const ARCHITECTURAL_TOP_FLOORS = (typeof PROJECT_CONFIG !== 'undefined' && PROJECT_CONFIG.architecturalTopFloors)
-        ? PROJECT_CONFIG.architecturalTopFloors
-        : { // Fallback: generated from G4 analysis
-            '10R': 3, '11R': 3, '12R': 3, '13R': 3, '14R': 3, '15R': 3, '16R': 3,
-            '1T': 4, '2R': 5, '3T': 4, '4R': 4, '5R': 4, '6T': 3, '7P': 3, '8R': 3, '9R': 3
-        };
-
+    // === V20 FIX: "Top Floor" = highest ML-priced floor per building ===
+    // G4 screenshots confirm: 4R top ML floor=3, 11R top ML floor=2, 8R top ML floor=2.
+    // Ghost rows (no price, no type) exist in data_v12.js on floors above the real ML floors.
+    // These are filtered out by the price>0 filter. So we calculate max floor from processedData.
+    const buildingMaxMLFloors = {};
     processedData.forEach(apt => {
-        const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        apt.isTopFloor = floorNum > 0 && floorNum === ARCHITECTURAL_TOP_FLOORS[apt.building];
+        const f = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
+        if (f > (buildingMaxMLFloors[apt.building] || 0))
+            buildingMaxMLFloors[apt.building] = f;
+    });
+    processedData.forEach(apt => {
+        const f = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
+        apt.isTopFloor = f > 0 && f === buildingMaxMLFloors[apt.building];
     });
 
     // V13: Rank apartments by price (1 = cheapest, N = most expensive)
