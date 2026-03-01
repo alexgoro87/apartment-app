@@ -1,10 +1,12 @@
-const CACHE_NAME = 'ramat-rabin-v8-20';
+const CACHE_NAME = 'ramat-rabin-v8-22';
 const ASSETS = [
     './',
     './index.html',
     './styles.css',
     './app.js',
-    './data.js',
+    './config.js',
+    './data_v12.js',
+    './sync.js',
     './icon-512.png',
     './manifest.json'
 ];

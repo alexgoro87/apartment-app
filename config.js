@@ -31,10 +31,11 @@ const PROJECT_CONFIG = {
         '--accent': '#8b5cf6',
     },
 
-    // Architectural top floors (generated from full G4 / D4 dataset including free-market units)
-    // Regenerate using: python calc_g4_floors.py
-    architecturalTopFloors: {
-        '10R': 3, '11R': 3, '12R': 3, '13R': 3, '14R': 3, '15R': 3, '16R': 3,
-        '1T': 4, '2R': 5, '3T': 4, '4R': 4, '5R': 4, '6T': 3, '7P': 3, '8R': 3, '9R': 3
+    // "קומה אחרונה" — ONLY these buildings have ML apartments on their true last floor.
+    // All other buildings: the top floor is a free-market penthouse (not in the 100-unit list).
+    // Confirmed directly from the G4 document by the user on 2026-03-01.
+    mlTopFloors: {
+        '4R': 3,   // קומה 3 היא הקומה האחרונה עם דירות מחיר למשתכן
+        '11R': 2   // קומה 2 היא הקומה האחרונה עם דירות מחיר למשתכן
     }
 };

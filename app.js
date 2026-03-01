@@ -56,20 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === V20 FIX: "Top Floor" = highest ML-priced floor per building ===
-    // G4 screenshots confirm: 4R top ML floor=3, 11R top ML floor=2, 8R top ML floor=2.
-    // Ghost rows (no price, no type) exist in data_v12.js on floors above the real ML floors.
-    // These are filtered out by the price>0 filter. So we calculate max floor from processedData.
-    const buildingMaxMLFloors = {};
+    // === V21: Exact ML top floor — directly from G4, confirmed by user 2026-03-01 ===
+    // ONLY 4R (floor 3) and 11R (floor 2) have ML apartments on their true last floor.
+    // All other buildings: top floor = free-market penthouse → no crown ever.
+    const ML_TOP_FLOORS = (typeof PROJECT_CONFIG !== 'undefined' && PROJECT_CONFIG.mlTopFloors)
+        ? PROJECT_CONFIG.mlTopFloors
+        : { '4R': 3, '11R': 2 }; // Hardcoded fallback
+
     processedData.forEach(apt => {
         const f = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        if (f > (buildingMaxMLFloors[apt.building] || 0))
-            buildingMaxMLFloors[apt.building] = f;
+        apt.isTopFloor = (ML_TOP_FLOORS[apt.building] !== undefined) && f === ML_TOP_FLOORS[apt.building];
     });
-    processedData.forEach(apt => {
-        const f = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        apt.isTopFloor = f > 0 && f === buildingMaxMLFloors[apt.building];
-    });
+    console.log('V21 top floor apts:', processedData.filter(a => a.isTopFloor).map(a => a.building + ' f' + a.floor));
+
 
     // V13: Rank apartments by price (1 = cheapest, N = most expensive)
     processedData.sort((a, b) => a.price - b.price);
