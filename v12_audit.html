@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>V12 Audit Table</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #eee; display: flex; height: 100vh; }
+    .table-panel { flex: 1; overflow-y: auto; padding: 10px; }
+    .image-panel { width: 45%; background: #16213e; border-right: 2px solid #0f3460; overflow-y: auto; padding: 10px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+    .image-panel img { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px; margin-top: 10px; }
+    .image-panel h3 { color: #e94560; margin: 10px 0 5px; }
+    .stats { background: #0f3460; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; gap: 20px; flex-wrap: wrap; }
+    .stats span { font-size: 14px; }
+    .stats .warn { color: #e94560; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #0f3460; color: #e94560; padding: 8px 4px; position: sticky; top: 0; z-index: 2; }
+    td { padding: 6px 4px; border-bottom: 1px solid #2a2a4a; text-align: center; }
+    tr { cursor: pointer; transition: background 0.2s; }
+    tr:hover { background: #1f4068; }
+    tr.placeholder { background: rgba(233, 69, 96, 0.15); }
+    tr.placeholder:hover { background: rgba(233, 69, 96, 0.3); }
+    tr.selected { background: #0f3460 !important; outline: 2px solid #e94560; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+    .badge-ok { background: #2ecc71; color: #000; }
+    .badge-warn { background: #e94560; color: #fff; }
+</style>
+</head>
+<body>
+<div class="table-panel">
+    <div class="stats">
+        <span>סה"כ דירות: <b>124</b></span>
+        <span class="warn">⚠ ללא שרטוט (page_001): <b>61</b></span>
+        <span>עם שרטוט: <b>63</b></span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th><th>מגרש</th><th>מבנה</th><th>דירה</th><th>קומה</th>
+                <th>חדרים</th><th>שטח</th><th>מרפסת</th><th>מחסן</th>
+                <th>כיוון</th><th>מחיר</th><th>טיפוס</th><th>קובץ</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_012.png', 0)">
+            <td>1</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>152.6</td>
+            <td>5.224</td>
+            <td>חמה</td>
+            <td>1183754</td>
+            <td>C</td>
+            <td>page_012.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_013.png', 1)">
+            <td>2</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>126.25</td>
+            <td>79.97</td>
+            <td>5.204</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>E</td>
+            <td>page_013.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 2)">
+            <td>3</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>3</td>
+            <td>1</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.86</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003656</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 3)">
+            <td>4</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.05</td>
+            <td>6.445</td>
+            <td>חמה</td>
+            <td>1404973</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_016.png', 4)">
+            <td>5</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>5</td>
+            <td>2</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>17.88</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1021949</td>
+            <td>C_2</td>
+            <td>page_016.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_017.png', 5)">
+            <td>6</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>19.46</td>
+            <td>6.445</td>
+            <td>חמה</td>
+            <td>1433114</td>
+            <td>E_2</td>
+            <td>page_017.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 6)">
+            <td>7</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>7</td>
+            <td>3</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.86</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003656</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 7)">
+            <td>8</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>8</td>
+            <td>3</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.05</td>
+            <td>6.445</td>
+            <td>חמה</td>
+            <td>1404973</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 8)">
+            <td>9</td>
+            <td>102</td>
+            <td>1T</td>
+            <td>9</td>
+            <td>4</td>
+            <td>6</td>
+            <td>178.97</td>
+            <td>67.16</td>
+            <td>6.708</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_019.png', 9)">
+            <td>10</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>93.83</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>A</td>
+            <td>page_019.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_020.png', 10)">
+            <td>11</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>114.66</td>
+            <td>34.11</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1310972</td>
+            <td>B</td>
+            <td>page_020.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_021.png', 11)">
+            <td>12</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>11.72</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1400410</td>
+            <td>A_1</td>
+            <td>page_021.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_022.png', 12)">
+            <td>13</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>16.71</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1214759</td>
+            <td>B_1</td>
+            <td>page_022.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 13)">
+            <td>14</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>23.16</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1443848</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_024.png', 14)">
+            <td>15</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>11.57</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1196182</td>
+            <td>B_2</td>
+            <td>page_024.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_025.png', 15)">
+            <td>16</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>17.94</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1424035</td>
+            <td>A_4</td>
+            <td>page_025.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_026.png', 16)">
+            <td>17</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>8</td>
+            <td>3</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>14.48</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1206260</td>
+            <td>B_3</td>
+            <td>page_026.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 17)">
+            <td>18</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>9</td>
+            <td>4</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>23.16</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1443848</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_024.png', 18)">
+            <td>19</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>10</td>
+            <td>4</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>11.78</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1196814</td>
+            <td>B_2</td>
+            <td>page_024.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_027.png', 19)">
+            <td>20</td>
+            <td>102</td>
+            <td>2R</td>
+            <td>11</td>
+            <td>5</td>
+            <td>6</td>
+            <td>156.09</td>
+            <td>115.79</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D3</td>
+            <td>page_027.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 20)">
+            <td>21</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>126.25</td>
+            <td>52.38</td>
+            <td>5.204</td>
+            <td>חמה</td>
+            <td>1518050</td>
+            <td>E_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 21)">
+            <td>22</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>66.58</td>
+            <td>5.224</td>
+            <td>חמה</td>
+            <td>1129654</td>
+            <td>C_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 22)">
+            <td>23</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.04</td>
+            <td>6.437</td>
+            <td>חמה</td>
+            <td>1404887</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 23)">
+            <td>24</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.85</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003619</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_017.png', 24)">
+            <td>25</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>19.47</td>
+            <td>6.437</td>
+            <td>חמה</td>
+            <td>1433107</td>
+            <td>E_2</td>
+            <td>page_017.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_016.png', 25)">
+            <td>26</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>6</td>
+            <td>2</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>17.84</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1021833</td>
+            <td>C_2</td>
+            <td>page_016.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 26)">
+            <td>27</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>7</td>
+            <td>3</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.04</td>
+            <td>6.437</td>
+            <td>חמה</td>
+            <td>1404887</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 27)">
+            <td>28</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>8</td>
+            <td>3</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.85</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003619</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 28)">
+            <td>29</td>
+            <td>102</td>
+            <td>3T</td>
+            <td>9</td>
+            <td>4</td>
+            <td>6</td>
+            <td>178.97</td>
+            <td>67.15</td>
+            <td>6.708</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 29)">
+            <td>30</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>114.66</td>
+            <td>68.08</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1386749</td>
+            <td>B_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 30)">
+            <td>31</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>116.51</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_022.png', 31)">
+            <td>32</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>16.71</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1214729</td>
+            <td>B_1</td>
+            <td>page_022.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_021.png', 32)">
+            <td>33</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>11.72</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1400410</td>
+            <td>A_1</td>
+            <td>page_021.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_024.png', 33)">
+            <td>34</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>11.57</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1196194</td>
+            <td>B_2</td>
+            <td>page_024.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 34)">
+            <td>35</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>14.74</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1411905</td>
+            <td>A_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_026.png', 35)">
+            <td>36</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>14.47</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1206233</td>
+            <td>B_3</td>
+            <td>page_026.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_025.png', 36)">
+            <td>37</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>8</td>
+            <td>3</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>17.94</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1424035</td>
+            <td>A_4</td>
+            <td>page_025.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_027.png', 37)">
+            <td>38</td>
+            <td>102</td>
+            <td>4R</td>
+            <td>9</td>
+            <td>4</td>
+            <td>6</td>
+            <td>156.09</td>
+            <td>115.79</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D3</td>
+            <td>page_027.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 38)">
+            <td>39</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>138.3</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>A_6</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 39)">
+            <td>40</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>114.66</td>
+            <td>98.48</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1425233</td>
+            <td>B_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_021.png', 40)">
+            <td>41</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>11.72</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1400410</td>
+            <td>A_1</td>
+            <td>page_021.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_022.png', 41)">
+            <td>42</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>16.71</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1214729</td>
+            <td>B_1</td>
+            <td>page_022.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 42)">
+            <td>43</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>14.74</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1411890</td>
+            <td>A_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_024.png', 43)">
+            <td>44</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>11.57</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1196182</td>
+            <td>B_2</td>
+            <td>page_024.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_025.png', 44)">
+            <td>45</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>5</td>
+            <td>127.17</td>
+            <td>17.94</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>1424035</td>
+            <td>A_4</td>
+            <td>page_025.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_026.png', 45)">
+            <td>46</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>8</td>
+            <td>3</td>
+            <td>4</td>
+            <td>111.38</td>
+            <td>14.47</td>
+            <td>3.687</td>
+            <td>חמה</td>
+            <td>1206233</td>
+            <td>B_3</td>
+            <td>page_026.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_027.png', 46)">
+            <td>47</td>
+            <td>102</td>
+            <td>5R</td>
+            <td>9</td>
+            <td>4</td>
+            <td>6</td>
+            <td>156.09</td>
+            <td>115.79</td>
+            <td>4.921</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D3</td>
+            <td>page_027.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 47)">
+            <td>48</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>126.25</td>
+            <td>113.63</td>
+            <td>5.204</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>E_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 48)">
+            <td>49</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>90.63</td>
+            <td>5.224</td>
+            <td>חמה</td>
+            <td>1154010</td>
+            <td>C_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 49)">
+            <td>50</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.09</td>
+            <td>6.445</td>
+            <td>חמה</td>
+            <td>1405117</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 50)">
+            <td>51</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.85</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003631</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_015.png', 51)">
+            <td>52</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.75</td>
+            <td>12.05</td>
+            <td>6.445</td>
+            <td>חמה</td>
+            <td>1404969</td>
+            <td>E_1</td>
+            <td>page_015.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 52)">
+            <td>53</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>6</td>
+            <td>2</td>
+            <td>3</td>
+            <td>92.12</td>
+            <td>11.85</td>
+            <td>4.373</td>
+            <td>חמה</td>
+            <td>1003631</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 53)">
+            <td>54</td>
+            <td>102</td>
+            <td>6T</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>178.97</td>
+            <td>67.15</td>
+            <td>6.666</td>
+            <td>חמה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_019.png', 54)">
+            <td>55</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>295.6</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>A</td>
+            <td>page_019.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_012.png', 55)">
+            <td>56</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.57</td>
+            <td>56.3</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>1085335</td>
+            <td>C</td>
+            <td>page_012.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_021.png', 56)">
+            <td>57</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>11.4</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1395604</td>
+            <td>A_1</td>
+            <td>page_021.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 57)">
+            <td>58</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>88.46</td>
+            <td>11.75</td>
+            <td>5.855</td>
+            <td>קרירה</td>
+            <td>975483</td>
+            <td>C_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 58)">
+            <td>59</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>22.7</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1438552</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 59)">
+            <td>60</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>6</td>
+            <td>2</td>
+            <td>3</td>
+            <td>88.46</td>
+            <td>14.33</td>
+            <td>5.855</td>
+            <td>קרירה</td>
+            <td>983340</td>
+            <td>C_6</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 60)">
+            <td>61</td>
+            <td>103</td>
+            <td>7P</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>160.04</td>
+            <td>94.94</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 61)">
+            <td>62</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>145.92</td>
+            <td>118.0</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>A+</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_014.png', 62)">
+            <td>63</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.71</td>
+            <td>36.0</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>1045627</td>
+            <td>C_1</td>
+            <td>page_014.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 63)">
+            <td>64</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>17.51</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1418815</td>
+            <td>A _2</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 64)">
+            <td>65</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>11.76</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>954822</td>
+            <td>C_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 65)">
+            <td>66</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>23.02</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1439748</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 66)">
+            <td>67</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>12.09</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>955809</td>
+            <td>C_7</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 67)">
+            <td>68</td>
+            <td>103</td>
+            <td>8R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>160.04</td>
+            <td>92.27</td>
+            <td>4.923</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 68)">
+            <td>69</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.34</td>
+            <td>71.2</td>
+            <td>5.433</td>
+            <td>קרירה</td>
+            <td>1120408</td>
+            <td>C-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_020.png', 69)">
+            <td>70</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>107.66</td>
+            <td>38.86</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1246856</td>
+            <td>B</td>
+            <td>page_020.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 70)">
+            <td>71</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>11.74</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1375916</td>
+            <td>A_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 71)">
+            <td>72</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>11.56</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1163822</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 72)">
+            <td>73</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>14.86</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1387761</td>
+            <td>A_6</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 73)">
+            <td>74</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>14.48</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1172690</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 74)">
+            <td>75</td>
+            <td>103</td>
+            <td>9R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>159.8</td>
+            <td>115.91</td>
+            <td>4.91</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_022.png', 75)">
+            <td>76</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>106.92</td>
+            <td>38.86</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1237390</td>
+            <td>B_1</td>
+            <td>page_022.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 76)">
+            <td>77</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>145.94</td>
+            <td>54.88</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1772791</td>
+            <td>A+_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 77)">
+            <td>78</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>11.76</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1164633</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 78)">
+            <td>79</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.93</td>
+            <td>17.9</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1421392</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 79)">
+            <td>80</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>14.6</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1173255</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 80)">
+            <td>81</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.93</td>
+            <td>22.99</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1440722</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 81)">
+            <td>82</td>
+            <td>103</td>
+            <td>10R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>159.8</td>
+            <td>115.91</td>
+            <td>4.91</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 82)">
+            <td>83</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>126.93</td>
+            <td>54.88</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1772791</td>
+            <td>A+_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_022.png', 83)">
+            <td>84</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>106.92</td>
+            <td>36.86</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1232339</td>
+            <td>B_1</td>
+            <td>page_022.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 84)">
+            <td>85</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.93</td>
+            <td>17.9</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1421388</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 85)">
+            <td>86</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>11.76</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1164633</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 86)">
+            <td>87</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.93</td>
+            <td>22.97</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1440654</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 87)">
+            <td>88</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>14.54</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1173094</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 88)">
+            <td>89</td>
+            <td>103</td>
+            <td>11R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>159.8</td>
+            <td>115.91</td>
+            <td>4.91</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_024.png', 89)">
+            <td>90</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>107.75</td>
+            <td>39.35</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1249135</td>
+            <td>B_2</td>
+            <td>page_024.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 90)">
+            <td>91</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.34</td>
+            <td>114.36</td>
+            <td>5.433</td>
+            <td>קרירה</td>
+            <td>1143863</td>
+            <td>C-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 91)">
+            <td>92</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>11.56</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1163822</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 92)">
+            <td>93</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>11.74</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1375912</td>
+            <td>A_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 93)">
+            <td>94</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>14.32</td>
+            <td>4.397</td>
+            <td>קרירה</td>
+            <td>1172207</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 94)">
+            <td>95</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>23.04</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1418815</td>
+            <td>A_6</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 95)">
+            <td>96</td>
+            <td>103</td>
+            <td>12R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>158.89</td>
+            <td>111.11</td>
+            <td>4.925</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D2</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_016.png', 96)">
+            <td>97</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.71</td>
+            <td>52.85</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>1079755</td>
+            <td>C_2</td>
+            <td>page_016.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 97)">
+            <td>98</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>145.92</td>
+            <td>15.82</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1655819</td>
+            <td>A+_2</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 98)">
+            <td>99</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>11.76</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>954822</td>
+            <td>C_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 99)">
+            <td>100</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>17.51</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1418815</td>
+            <td>A _2</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 100)">
+            <td>101</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>14.22</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>962296</td>
+            <td>C_7</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 101)">
+            <td>102</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>23.01</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>1439729</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 102)">
+            <td>103</td>
+            <td>103</td>
+            <td>13R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>160.04</td>
+            <td>92.28</td>
+            <td>4.918</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 103)">
+            <td>104</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>145.92</td>
+            <td>50.7</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>1418815</td>
+            <td>A+_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 104)">
+            <td>105</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.71</td>
+            <td>53.35</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>1080768</td>
+            <td>C_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 105)">
+            <td>106</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>17.51</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>1418815</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 106)">
+            <td>107</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>11.76</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>954822</td>
+            <td>C_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 107)">
+            <td>108</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.83</td>
+            <td>23.02</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>1439767</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 108)">
+            <td>109</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>3</td>
+            <td>86.41</td>
+            <td>14.14</td>
+            <td>5.85</td>
+            <td>קרירה</td>
+            <td>962053</td>
+            <td>C_7</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 109)">
+            <td>110</td>
+            <td>103</td>
+            <td>14R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>160.04</td>
+            <td>92.27</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 110)">
+            <td>111</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>3</td>
+            <td>88.34</td>
+            <td>123.7</td>
+            <td>5.43</td>
+            <td>קרירה</td>
+            <td>1149575</td>
+            <td>C-_2</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_026.png', 111)">
+            <td>112</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>107.75</td>
+            <td>70.2</td>
+            <td>4.4</td>
+            <td>קרירה</td>
+            <td>1314329</td>
+            <td>B_3</td>
+            <td>page_026.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 112)">
+            <td>113</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>11.74</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>1375901</td>
+            <td>A_3</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 113)">
+            <td>114</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>11.56</td>
+            <td>4.4</td>
+            <td>קרירה</td>
+            <td>1163822</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 114)">
+            <td>115</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>5</td>
+            <td>124.88</td>
+            <td>14.96</td>
+            <td>4.92</td>
+            <td>קרירה</td>
+            <td>1388134</td>
+            <td>A_6</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 115)">
+            <td>116</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.69</td>
+            <td>14.56</td>
+            <td>4.4</td>
+            <td>קרירה</td>
+            <td>1172936</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 116)">
+            <td>117</td>
+            <td>103</td>
+            <td>15R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>159.8</td>
+            <td>115.91</td>
+            <td>4.91</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 117)">
+            <td>118</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>1</td>
+            <td>קרקע</td>
+            <td>4</td>
+            <td>106.92</td>
+            <td>59.0</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1313711</td>
+            <td>B_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 118)">
+            <td>119</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>2</td>
+            <td>קרקע</td>
+            <td>6</td>
+            <td>145.94</td>
+            <td>90.6</td>
+            <td>4.921</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>A+_4</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 119)">
+            <td>120</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>3</td>
+            <td>1</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>11.76</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1164633</td>
+            <td>B-</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_023.png', 120)">
+            <td>121</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>4</td>
+            <td>1</td>
+            <td>5</td>
+            <td>126.94</td>
+            <td>17.91</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1421444</td>
+            <td>A_2</td>
+            <td>page_023.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 121)">
+            <td>122</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>107.72</td>
+            <td>14.55</td>
+            <td>4.385</td>
+            <td>קרירה</td>
+            <td>1173121</td>
+            <td>B-_1</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="placeholder" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_001.png', 122)">
+            <td>123</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>6</td>
+            <td>2</td>
+            <td>5</td>
+            <td>126.94</td>
+            <td>22.99</td>
+            <td>4.922</td>
+            <td>קרירה</td>
+            <td>1440748</td>
+            <td>A_5</td>
+            <td>page_001.png</td>
+        </tr>
+        <tr class="" onclick="showImage('c:/Users/user/Documents/ALEX/HOME/apartment-app/v12_temp/catalog_pages/page_018.png', 123)">
+            <td>124</td>
+            <td>103</td>
+            <td>16R</td>
+            <td>7</td>
+            <td>3</td>
+            <td>6</td>
+            <td>159.8</td>
+            <td>117.65</td>
+            <td>4.91</td>
+            <td>קרירה</td>
+            <td>לא צוין</td>
+            <td>D</td>
+            <td>page_018.png</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="image-panel" id="imagePanel">
+    <h3>לחץ על שורה לצפייה בשרטוט</h3>
+    <p style="color:#888; font-size:13px;">בחר דירה מהטבלה</p>
+</div>
+
+<script>
+let selectedRow = null;
+function showImage(path, idx) {
+    const panel = document.getElementById('imagePanel');
+    const rows = document.querySelectorAll('tbody tr');
+    if (selectedRow !== null) rows[selectedRow].classList.remove('selected');
+    rows[idx].classList.add('selected');
+    selectedRow = idx;
+    const isPlaceholder = path.endsWith('page_001.png');
+    panel.innerHTML = `
+        <h3>${isPlaceholder ? '⚠ PLACEHOLDER – לא שרטוט אמיתי' : '✅ שרטוט'}</h3>
+        <p style="color:#888; font-size:12px;">${path.split('/').pop()}</p>
+        <img src="file:///${path}" onerror="this.src='${path}'">
+    `;
+}
+</script>
+</body>
+</html>

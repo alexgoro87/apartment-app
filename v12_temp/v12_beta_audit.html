@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>V12 Beta Audit - Floorplan Verification</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; }
+h1 { text-align: center; font-size: 1.8em; margin-bottom: 10px; color: #38bdf8; }
+.stats { text-align: center; margin-bottom: 20px; font-size: 1.1em; color: #94a3b8; }
+.stats span { color: #22c55e; font-weight: bold; }
+.filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.filters select, .filters input { padding: 8px 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #e2e8f0; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; }
+th { background: #334155; padding: 12px 8px; text-align: center; font-size: 13px; position: sticky; top: 0; z-index: 10; }
+td { padding: 8px; text-align: center; border-bottom: 1px solid #334155; font-size: 13px; }
+tr:hover { background: #334155; }
+.img-cell { cursor: pointer; }
+.img-cell img { max-width: 120px; max-height: 90px; border-radius: 6px; border: 2px solid #334155; transition: transform 0.2s; }
+.img-cell img:hover { transform: scale(1.1); border-color: #38bdf8; }
+.was-placeholder { background: #1a2e1a !important; }
+.was-wrong { background: #2e2a1a !important; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
+.modal.active { display: flex; }
+.modal img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
+.modal-close { position: fixed; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; z-index: 101; }
+.legend { display: flex; gap: 20px; justify-content: center; margin-bottom: 15px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.legend-color { width: 16px; height: 16px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>🏠 V12 Beta Audit - Floorplan Verification</h1>
+<div class="stats">
+    Total: <span>124</span> apartments | 
+    All floorplans mapped ✅ | 
+    <span>0</span> placeholders remaining
+</div>
+<div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#1a2e1a"></div> Was placeholder (fixed)</div>
+    <div class="legend-item"><div class="legend-color" style="background:#2e2a1a"></div> Was wrong page (fixed)</div>
+</div>
+<div class="filters">
+    <select id="lotFilter" onchange="filterTable()">
+        <option value="">כל המתחמים</option>
+        <option value="102">מתחם 102</option>
+        <option value="103">מתחם 103</option>
+    </select>
+    <select id="buildingFilter" onchange="filterTable()">
+        <option value="">כל הבניינים</option>
+    </select>
+    <select id="statusFilter" onchange="filterTable()">
+        <option value="">הכל</option>
+        <option value="fixed-placeholder">תוקן מ-placeholder</option>
+        <option value="fixed-wrong">תוקן מעמוד שגוי</option>
+        <option value="ok">תקין מלכתחילה</option>
+    </select>
+</div>
+<table id="auditTable">
+<thead>
+<tr>
+    <th>#</th><th>מתחם</th><th>בניין</th><th>דירה</th><th>קומה</th>
+    <th>חדרים</th><th>שטח</th><th>סוג</th><th>כיוון</th>
+    <th>עמוד ישן</th><th>עמוד חדש</th><th>סרטוט</th><th>סטטוס</th>
+</tr>
+</thead>
+<tbody>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>1</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_012.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_012.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_012.png')">
+        <img src="catalog_pages/page_012.png" alt="C" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>2</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>126.25</td>
+    <td>E</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_013.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_013.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_013.png')">
+        <img src="catalog_pages/page_013.png" alt="E" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>3</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>3</td>
+    <td>1</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>4</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>5</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>5</td>
+    <td>2</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_016.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_016.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_016.png')">
+        <img src="catalog_pages/page_016.png" alt="C_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>6</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_017.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_017.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_017.png')">
+        <img src="catalog_pages/page_017.png" alt="E_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>7</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>7</td>
+    <td>3</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>8</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>8</td>
+    <td>3</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="1T" data-status="ok">
+    <td>9</td>
+    <td>102</td>
+    <td>1T</td>
+    <td>9</td>
+    <td>4</td>
+    <td>6</td>
+    <td>178.97</td>
+    <td>D</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>10</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_019.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_019.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_019.png')">
+        <img src="catalog_pages/page_019.png" alt="A" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>11</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>114.66</td>
+    <td>B</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_020.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_020.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_020.png')">
+        <img src="catalog_pages/page_020.png" alt="B" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>12</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_021.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_021.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_021.png')">
+        <img src="catalog_pages/page_021.png" alt="A_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>13</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_022.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_022.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_022.png')">
+        <img src="catalog_pages/page_022.png" alt="B_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>14</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_023.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_023.png')">
+        <img src="catalog_pages/page_023.png" alt="A_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>15</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_024.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_024.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_024.png')">
+        <img src="catalog_pages/page_024.png" alt="B_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>16</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_025.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_025.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_025.png')">
+        <img src="catalog_pages/page_025.png" alt="A_4" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>17</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>8</td>
+    <td>3</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_026.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_026.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_026.png')">
+        <img src="catalog_pages/page_026.png" alt="B_3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>18</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>9</td>
+    <td>4</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_023.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_023.png')">
+        <img src="catalog_pages/page_023.png" alt="A_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>19</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>10</td>
+    <td>4</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_024.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_024.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_024.png')">
+        <img src="catalog_pages/page_024.png" alt="B_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="2R" data-status="ok">
+    <td>20</td>
+    <td>102</td>
+    <td>2R</td>
+    <td>11</td>
+    <td>5</td>
+    <td>6</td>
+    <td>156.09</td>
+    <td>D3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_027.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_027.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_027.png')">
+        <img src="catalog_pages/page_027.png" alt="D3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="3T" data-status="fixed-placeholder">
+    <td>21</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>126.25</td>
+    <td>E_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_032.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_032.png')">
+        <img src="catalog_pages/page_032.png" alt="E_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="3T" data-status="fixed-placeholder">
+    <td>22</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_035.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_035.png')">
+        <img src="catalog_pages/page_035.png" alt="C_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>23</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>24</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>4</td>
+    <td>1</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>25</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_017.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_017.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_017.png')">
+        <img src="catalog_pages/page_017.png" alt="E_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>26</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>6</td>
+    <td>2</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_016.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_016.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_016.png')">
+        <img src="catalog_pages/page_016.png" alt="C_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>27</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>7</td>
+    <td>3</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>28</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>8</td>
+    <td>3</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="3T" data-status="ok">
+    <td>29</td>
+    <td>102</td>
+    <td>3T</td>
+    <td>9</td>
+    <td>4</td>
+    <td>6</td>
+    <td>178.97</td>
+    <td>D</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="4R" data-status="fixed-placeholder">
+    <td>30</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>114.66</td>
+    <td>B_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_030.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_030.png')">
+        <img src="catalog_pages/page_030.png" alt="B_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="4R" data-status="fixed-placeholder">
+    <td>31</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_5</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_040.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_040.png')">
+        <img src="catalog_pages/page_040.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>32</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_022.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_022.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_022.png')">
+        <img src="catalog_pages/page_022.png" alt="B_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>33</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_021.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_021.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_021.png')">
+        <img src="catalog_pages/page_021.png" alt="A_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>34</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_024.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_024.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_024.png')">
+        <img src="catalog_pages/page_024.png" alt="B_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="4R" data-status="fixed-placeholder">
+    <td>35</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_045.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_045.png')">
+        <img src="catalog_pages/page_045.png" alt="A_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>36</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_026.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_026.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_026.png')">
+        <img src="catalog_pages/page_026.png" alt="B_3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>37</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>8</td>
+    <td>3</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_025.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_025.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_025.png')">
+        <img src="catalog_pages/page_025.png" alt="A_4" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="4R" data-status="ok">
+    <td>38</td>
+    <td>102</td>
+    <td>4R</td>
+    <td>9</td>
+    <td>4</td>
+    <td>6</td>
+    <td>156.09</td>
+    <td>D3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_027.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_027.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_027.png')">
+        <img src="catalog_pages/page_027.png" alt="D3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="5R" data-status="fixed-placeholder">
+    <td>39</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_6</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_040.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_040.png')">
+        <img src="catalog_pages/page_040.png" alt="A_6" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="5R" data-status="fixed-placeholder">
+    <td>40</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>114.66</td>
+    <td>B_5</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_044.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_044.png')">
+        <img src="catalog_pages/page_044.png" alt="B_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>41</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_021.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_021.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_021.png')">
+        <img src="catalog_pages/page_021.png" alt="A_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>42</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_022.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_022.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_022.png')">
+        <img src="catalog_pages/page_022.png" alt="B_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="5R" data-status="fixed-placeholder">
+    <td>43</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_045.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_045.png')">
+        <img src="catalog_pages/page_045.png" alt="A_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>44</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_2</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_024.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_024.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_024.png')">
+        <img src="catalog_pages/page_024.png" alt="B_2" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>45</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>5</td>
+    <td>127.17</td>
+    <td>A_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_025.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_025.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_025.png')">
+        <img src="catalog_pages/page_025.png" alt="A_4" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>46</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>8</td>
+    <td>3</td>
+    <td>4</td>
+    <td>111.38</td>
+    <td>B_3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_026.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_026.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_026.png')">
+        <img src="catalog_pages/page_026.png" alt="B_3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="5R" data-status="ok">
+    <td>47</td>
+    <td>102</td>
+    <td>5R</td>
+    <td>9</td>
+    <td>4</td>
+    <td>6</td>
+    <td>156.09</td>
+    <td>D3</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_027.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_027.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_027.png')">
+        <img src="catalog_pages/page_027.png" alt="D3" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="6T" data-status="fixed-placeholder">
+    <td>48</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>126.25</td>
+    <td>E_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_032.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_032.png')">
+        <img src="catalog_pages/page_032.png" alt="E_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="102" data-building="6T" data-status="fixed-placeholder">
+    <td>49</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_4</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_037.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_037.png')">
+        <img src="catalog_pages/page_037.png" alt="C_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="102" data-building="6T" data-status="ok">
+    <td>50</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="6T" data-status="ok">
+    <td>51</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>4</td>
+    <td>1</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="6T" data-status="ok">
+    <td>52</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.75</td>
+    <td>E_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_015.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_015.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_015.png')">
+        <img src="catalog_pages/page_015.png" alt="E_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="6T" data-status="ok">
+    <td>53</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>6</td>
+    <td>2</td>
+    <td>3</td>
+    <td>92.12</td>
+    <td>C_1</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_014.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_014.png')">
+        <img src="catalog_pages/page_014.png" alt="C_1" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="" data-lot="102" data-building="6T" data-status="ok">
+    <td>54</td>
+    <td>102</td>
+    <td>6T</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>178.97</td>
+    <td>D</td>
+    <td>חמה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="7P" data-status="fixed-wrong">
+    <td>55</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_019.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_046.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_046.png')">
+        <img src="catalog_pages/page_046.png" alt="A" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="7P" data-status="fixed-wrong">
+    <td>56</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.57</td>
+    <td>C</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_012.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_047.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_047.png')">
+        <img src="catalog_pages/page_047.png" alt="C" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="7P" data-status="fixed-wrong">
+    <td>57</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_021.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_046.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_046.png')">
+        <img src="catalog_pages/page_046.png" alt="A_1" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="7P" data-status="fixed-placeholder">
+    <td>58</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>4</td>
+    <td>1</td>
+    <td>3</td>
+    <td>88.46</td>
+    <td>C_4</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_047.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_047.png')">
+        <img src="catalog_pages/page_047.png" alt="C_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="7P" data-status="fixed-placeholder">
+    <td>59</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="7P" data-status="fixed-placeholder">
+    <td>60</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>6</td>
+    <td>2</td>
+    <td>3</td>
+    <td>88.46</td>
+    <td>C_6</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_048.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_048.png')">
+        <img src="catalog_pages/page_048.png" alt="C_6" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="7P" data-status="fixed-placeholder">
+    <td>61</td>
+    <td>103</td>
+    <td>7P</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>160.04</td>
+    <td>D1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>62</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>145.92</td>
+    <td>A+</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_033.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_033.png')">
+        <img src="catalog_pages/page_033.png" alt="A+" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="8R" data-status="fixed-wrong">
+    <td>63</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.71</td>
+    <td>C_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_014.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_035.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_035.png')">
+        <img src="catalog_pages/page_035.png" alt="C_1" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>64</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A _2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A _2" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>65</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_051.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_051.png')">
+        <img src="catalog_pages/page_051.png" alt="C_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>66</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>67</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_7</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_052.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_052.png')">
+        <img src="catalog_pages/page_052.png" alt="C_7" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="8R" data-status="fixed-placeholder">
+    <td>68</td>
+    <td>103</td>
+    <td>8R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>160.04</td>
+    <td>D1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="9R" data-status="fixed-placeholder">
+    <td>69</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.34</td>
+    <td>C-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="C-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="9R" data-status="fixed-wrong">
+    <td>70</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>107.66</td>
+    <td>B</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_020.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="9R" data-status="fixed-placeholder">
+    <td>71</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_055.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_055.png')">
+        <img src="catalog_pages/page_055.png" alt="A_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="9R" data-status="fixed-placeholder">
+    <td>72</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="9R" data-status="fixed-placeholder">
+    <td>73</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_6</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_056.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_056.png')">
+        <img src="catalog_pages/page_056.png" alt="A_6" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="9R" data-status="fixed-placeholder">
+    <td>74</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="103" data-building="9R" data-status="ok">
+    <td>75</td>
+    <td>103</td>
+    <td>9R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>159.8</td>
+    <td>D</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="10R" data-status="fixed-wrong">
+    <td>76</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>106.92</td>
+    <td>B_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_022.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B_1" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="10R" data-status="fixed-placeholder">
+    <td>77</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>145.94</td>
+    <td>A+_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_033.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_033.png')">
+        <img src="catalog_pages/page_033.png" alt="A+_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="10R" data-status="fixed-placeholder">
+    <td>78</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="10R" data-status="fixed-wrong">
+    <td>79</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.93</td>
+    <td>A_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="10R" data-status="fixed-placeholder">
+    <td>80</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="10R" data-status="fixed-placeholder">
+    <td>81</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.93</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="103" data-building="10R" data-status="ok">
+    <td>82</td>
+    <td>103</td>
+    <td>10R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>159.8</td>
+    <td>D</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="11R" data-status="fixed-placeholder">
+    <td>83</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>126.93</td>
+    <td>A+_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_033.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_033.png')">
+        <img src="catalog_pages/page_033.png" alt="A+_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="11R" data-status="fixed-wrong">
+    <td>84</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>106.92</td>
+    <td>B_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_022.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B_1" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="11R" data-status="fixed-wrong">
+    <td>85</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.93</td>
+    <td>A_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="11R" data-status="fixed-placeholder">
+    <td>86</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="11R" data-status="fixed-placeholder">
+    <td>87</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.93</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="11R" data-status="fixed-placeholder">
+    <td>88</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="103" data-building="11R" data-status="ok">
+    <td>89</td>
+    <td>103</td>
+    <td>11R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>159.8</td>
+    <td>D</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="12R" data-status="fixed-wrong">
+    <td>90</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>107.75</td>
+    <td>B_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_024.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>91</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.34</td>
+    <td>C-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="C-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>92</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>93</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_055.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_055.png')">
+        <img src="catalog_pages/page_055.png" alt="A_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>94</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>95</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_6</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_056.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_056.png')">
+        <img src="catalog_pages/page_056.png" alt="A_6" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="12R" data-status="fixed-placeholder">
+    <td>96</td>
+    <td>103</td>
+    <td>12R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>158.89</td>
+    <td>D2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_027.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_027.png')">
+        <img src="catalog_pages/page_027.png" alt="D2" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="13R" data-status="fixed-wrong">
+    <td>97</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.71</td>
+    <td>C_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_016.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_051.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_051.png')">
+        <img src="catalog_pages/page_051.png" alt="C_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>98</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>145.92</td>
+    <td>A+_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_033.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_033.png')">
+        <img src="catalog_pages/page_033.png" alt="A+_2" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>99</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_051.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_051.png')">
+        <img src="catalog_pages/page_051.png" alt="C_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>100</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A _2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A _2" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>101</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_7</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_052.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_052.png')">
+        <img src="catalog_pages/page_052.png" alt="C_7" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>102</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="13R" data-status="fixed-placeholder">
+    <td>103</td>
+    <td>103</td>
+    <td>13R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>160.04</td>
+    <td>D1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>104</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>145.92</td>
+    <td>A+_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_034.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_034.png')">
+        <img src="catalog_pages/page_034.png" alt="A+_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>105</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.71</td>
+    <td>C_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_035.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_035.png')">
+        <img src="catalog_pages/page_035.png" alt="C_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="14R" data-status="fixed-wrong">
+    <td>106</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>107</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_051.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_051.png')">
+        <img src="catalog_pages/page_051.png" alt="C_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>108</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.83</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>109</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>3</td>
+    <td>86.41</td>
+    <td>C_7</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_052.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_052.png')">
+        <img src="catalog_pages/page_052.png" alt="C_7" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="14R" data-status="fixed-placeholder">
+    <td>110</td>
+    <td>103</td>
+    <td>14R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>160.04</td>
+    <td>D1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="15R" data-status="fixed-placeholder">
+    <td>111</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>3</td>
+    <td>88.34</td>
+    <td>C-_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="C-_2" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="15R" data-status="fixed-wrong">
+    <td>112</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>107.75</td>
+    <td>B_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_026.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B_3" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="15R" data-status="fixed-placeholder">
+    <td>113</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_3</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_055.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_055.png')">
+        <img src="catalog_pages/page_055.png" alt="A_3" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="15R" data-status="fixed-placeholder">
+    <td>114</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="15R" data-status="fixed-placeholder">
+    <td>115</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>5</td>
+    <td>124.88</td>
+    <td>A_6</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_056.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_056.png')">
+        <img src="catalog_pages/page_056.png" alt="A_6" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="15R" data-status="fixed-placeholder">
+    <td>116</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.69</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="103" data-building="15R" data-status="ok">
+    <td>117</td>
+    <td>103</td>
+    <td>15R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>159.8</td>
+    <td>D</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="16R" data-status="fixed-placeholder">
+    <td>118</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>1</td>
+    <td>קרקע</td>
+    <td>4</td>
+    <td>106.92</td>
+    <td>B_4</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_030.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_030.png')">
+        <img src="catalog_pages/page_030.png" alt="B_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="16R" data-status="fixed-placeholder">
+    <td>119</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>2</td>
+    <td>קרקע</td>
+    <td>6</td>
+    <td>145.94</td>
+    <td>A+_4</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_033.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_033.png')">
+        <img src="catalog_pages/page_033.png" alt="A+_4" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="16R" data-status="fixed-placeholder">
+    <td>120</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>3</td>
+    <td>1</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_054.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_054.png')">
+        <img src="catalog_pages/page_054.png" alt="B-" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-wrong" data-lot="103" data-building="16R" data-status="fixed-wrong">
+    <td>121</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>4</td>
+    <td>1</td>
+    <td>5</td>
+    <td>126.94</td>
+    <td>A_2</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_023.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_050.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_050.png')">
+        <img src="catalog_pages/page_050.png" alt="A_2" loading="lazy">
+    </td>
+    <td>🔄 תוקן (עמוד שגוי)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="16R" data-status="fixed-placeholder">
+    <td>122</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>5</td>
+    <td>2</td>
+    <td>4</td>
+    <td>107.72</td>
+    <td>B-_1</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_053.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_053.png')">
+        <img src="catalog_pages/page_053.png" alt="B-_1" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="was-placeholder" data-lot="103" data-building="16R" data-status="fixed-placeholder">
+    <td>123</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>6</td>
+    <td>2</td>
+    <td>5</td>
+    <td>126.94</td>
+    <td>A_5</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_001.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_049.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_049.png')">
+        <img src="catalog_pages/page_049.png" alt="A_5" loading="lazy">
+    </td>
+    <td>✅ תוקן (placeholder)</td>
+</tr>
+<tr class="" data-lot="103" data-building="16R" data-status="ok">
+    <td>124</td>
+    <td>103</td>
+    <td>16R</td>
+    <td>7</td>
+    <td>3</td>
+    <td>6</td>
+    <td>159.8</td>
+    <td>D</td>
+    <td>קרירה</td>
+    <td style="font-size:11px;color:#94a3b8">page_018.png</td>
+    <td style="font-size:11px;color:#38bdf8;font-weight:bold">page_018.png</td>
+    <td class="img-cell" onclick="showModal('catalog_pages/page_018.png')">
+        <img src="catalog_pages/page_018.png" alt="D" loading="lazy">
+    </td>
+    <td>✓ תקין</td>
+</tr>
+</tbody></table>
+
+<div class="modal" id="imageModal" onclick="hideModal()">
+    <span class="modal-close" onclick="hideModal()">✕</span>
+    <img id="modalImg" src="">
+</div>
+
+<script>
+function showModal(src) {
+    document.getElementById('modalImg').src = src;
+    document.getElementById('imageModal').classList.add('active');
+}
+function hideModal() {
+    document.getElementById('imageModal').classList.remove('active');
+}
+
+// Populate building filter
+const buildings = ["10R", "11R", "12R", "13R", "14R", "15R", "16R", "1T", "2R", "3T", "4R", "5R", "6T", "7P", "8R", "9R"];
+const bf = document.getElementById('buildingFilter');
+buildings.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b; opt.textContent = b;
+    bf.appendChild(opt);
+});
+
+function filterTable() {
+    const lot = document.getElementById('lotFilter').value;
+    const building = document.getElementById('buildingFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    const rows = document.querySelectorAll('#auditTable tbody tr');
+    rows.forEach(row => {
+        const matchLot = !lot || row.dataset.lot === lot;
+        const matchBldg = !building || row.dataset.building === building;
+        const matchStatus = !status || row.dataset.status === status;
+        row.style.display = (matchLot && matchBldg && matchStatus) ? '' : 'none';
+    });
+}
+</script>
+</body></html>

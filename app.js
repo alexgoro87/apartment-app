@@ -56,23 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         apt.status = safeGetItem(`apt_${apt.aptText}_${apt.building}`) || 'available';
     });
 
-    // === V15 FIX: True Architectural Top Floor computation ===
-    // User specifically requested that the "Top Floor" crown should ONLY apply 
-    // if the apartment is on the TRUE architectural top floor of the building
-    // (based on the full G4 dataset, including unpriced Free Market penthouses).
-    // Therefore, buildingMaxFloors MUST be calculated from rawData.
-    const buildingMaxFloors = {};
-    rawData.forEach(item => {
-        const floor = String(item.floor || '');
-        const floorNum = (floor === 'קרקע' || floor === 'עקרק') ? 0 : (parseInt(floor) || 0);
-        const building = item.building || '';
-        if (building && (!buildingMaxFloors[building] || floorNum > buildingMaxFloors[building])) {
-            buildingMaxFloors[building] = floorNum;
-        }
-    });
+    // === V16 FIX: Bulletproof Hardcoded Top Floors ===
+    // User requested that "Top Floor" ONLY applies to the TRUE architectural
+    // top floor of the building, according to the original G4 dataset (all 124 apts).
+    // Dynamic calculation is prone to errors when data is filtered. We hardcode
+    // the absolute truth here as generated directly from the D4/G4 documents.
+    const ARCHITECTURAL_TOP_FLOORS = {
+        '10R': 3, '11R': 3, '12R': 3, '13R': 3, '14R': 3, '15R': 3, '16R': 3,
+        '1T': 4, '2R': 5, '3T': 4, '4R': 4, '5R': 4, '6T': 3, '7P': 3, '8R': 3, '9R': 3
+    };
+
     processedData.forEach(apt => {
         const floorNum = apt.floor === 'קרקע' ? 0 : (parseInt(apt.floor) || 0);
-        apt.isTopFloor = floorNum > 0 && floorNum === buildingMaxFloors[apt.building];
+        apt.isTopFloor = floorNum > 0 && floorNum === ARCHITECTURAL_TOP_FLOORS[apt.building];
     });
 
     // V13: Rank apartments by price (1 = cheapest, N = most expensive)

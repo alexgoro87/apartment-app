@@ -25,10 +25,16 @@ def build_zip():
     with zipfile.ZipFile(tmp.name, 'w', zipfile.ZIP_DEFLATED) as zf:
         for root, dirs, files in os.walk(APP_DIR):
             # Skip hidden/system dirs
-            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__']]
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'pages_temp', 'floorplans', 'docs']]
             for file in files:
                 if file.endswith('.py') and file != 'deploy.py':
                     continue  # Skip other python scripts
+                
+                # Exclude huge blobs
+                ext = file.lower().split('.')[-1]
+                if ext in ['pdf', 'zip', 'csv', 'numbers']:
+                    continue
+                    
                 full_path = os.path.join(root, file)
                 rel_path = os.path.relpath(full_path, APP_DIR)
                 zf.write(full_path, rel_path)

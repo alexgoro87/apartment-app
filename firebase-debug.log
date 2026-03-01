@@ -1,0 +1,48 @@
+[debug] [2026-02-28T19:14:20.510Z] ----------------------------------------------------------------------
+[debug] [2026-02-28T19:14:20.513Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\user\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js projects:create ramat-rabin-2026 -n Ramat Rabin App
+[debug] [2026-02-28T19:14:20.514Z] CLI Version:   15.8.0
+[debug] [2026-02-28T19:14:20.514Z] Platform:      win32
+[debug] [2026-02-28T19:14:20.514Z] Node Version:  v22.14.0
+[debug] [2026-02-28T19:14:20.515Z] Time:          Sat Feb 28 2026 21:14:20 GMT+0200 (Израиль, стандартное время)
+[debug] [2026-02-28T19:14:20.515Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-02-28T19:14:20.517Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-02-28T19:14:20.571Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-28T19:14:20.571Z] > authorizing via signed-in user (alex666atn@gmail.com)
+[debug] [2026-02-28T19:14:20.574Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:20.574Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:20.574Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-02-28T19:14:20.574Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"ramat-rabin-2026","name":"Ramat Rabin App"}
+[debug] [2026-02-28T19:14:20.969Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-02-28T19:14:20.969Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-02-28T19:14:21.100Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-02-28T19:14:21.100Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.9207115676061717045"}
+[debug] [2026-02-28T19:14:21.100Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:21.100Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:21.101Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 [none]
+[debug] [2026-02-28T19:14:22.001Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 200
+[debug] [2026-02-28T19:14:22.001Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 {"name":"operations/create_project.global.9207115676061717045"}
+[debug] [2026-02-28T19:14:22.504Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-28T19:14:22.505Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:22.505Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:22.505Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 [none]
+[debug] [2026-02-28T19:14:22.717Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 200
+[debug] [2026-02-28T19:14:22.717Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 {"name":"operations/create_project.global.9207115676061717045"}
+[debug] [2026-02-28T19:14:23.722Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-28T19:14:23.723Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:23.723Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:23.723Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 [none]
+[debug] [2026-02-28T19:14:23.929Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 200
+[debug] [2026-02-28T19:14:23.929Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.9207115676061717045 {"name":"operations/create_project.global.9207115676061717045","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true,"ready":true},"done":true,"response":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.Project","projectNumber":"320924846939","projectId":"ramat-rabin-2026","lifecycleState":"ACTIVE","name":"Ramat Rabin App","createTime":"2026-02-28T19:14:15.853644Z"}}
+[debug] [2026-02-28T19:14:23.929Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:23.929Z] Checked if tokens are valid: true, expires at: 1772309588595
+[debug] [2026-02-28T19:14:23.929Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/ramat-rabin-2026:addFirebase [none]
+[debug] [2026-02-28T19:14:25.149Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/ramat-rabin-2026:addFirebase 403
+[debug] [2026-02-28T19:14:25.149Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/ramat-rabin-2026:addFirebase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-02-28T19:14:25.150Z] Request to https://firebase.googleapis.com/v1beta1/projects/ramat-rabin-2026:addFirebase had HTTP Error: 403, The caller does not have permission
+[debug] [2026-02-28T19:14:25.151Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/ramat-rabin-2026:addFirebase had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\user\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\user\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\apiv2.js:330:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to add Firebase to Google Cloud Platform project. See firebase-debug.log for more info.
