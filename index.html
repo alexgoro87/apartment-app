@@ -227,37 +227,33 @@
     </div>
 
     <!-- User Selection Modal (V6 Cloud Sync) -->
-    <div id="user-selector-modal" class="modal" style="display: none; background: rgba(15, 23, 42, 0.9);">
-        <div class="modal-content glass-panel" style="text-align: center; padding: 2rem; max-width: 450px;">
-            <h2 style="margin-bottom: 0.5rem;">מי משתמש באפליקציה? 🏠</h2>
-            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">הבחירות שלכם יסונכרנו בזמן אמת
-            </p>
+    <!-- V17: Dynamic User Registration Modal -->
+    <div id="user-selector-modal" class="modal" style="display: none; background: rgba(15, 23, 42, 0.92);">
+        <div class="modal-content glass-panel" style="text-align: center; padding: 2rem; max-width: 480px; width: 95vw;">
+            <h2 style="margin-bottom: 0.35rem;">👤 בחר פרופיל</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.88rem;">כל משתמש שומר מועדפים זזה נפרד</p>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <!-- Profile Me (Alex) -->
-                <button onclick="setUser('me')" class="btn-secondary"
-                    style="display: flex; align-items: center; justify-content: flex-start; gap: 1rem; padding: 1rem; width: 100%;">
-                    <i class="fa-solid fa-user-tie" style="font-size: 1.5rem; color: var(--primary);"></i>
-                    <span style="font-weight: 600;">אלכס</span>
-                </button>
+            <!-- Registered users list -->
+            <div id="user-list" style="display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.25rem;"></div>
 
-                <!-- Profile Wife (Anna) -->
-                <button onclick="setUser('wife')" class="btn-secondary"
-                    style="display: flex; align-items: center; justify-content: flex-start; gap: 1rem; padding: 1rem; width: 100%;">
-                    <i class="fa-solid fa-user-nurse" style="font-size: 1.5rem; color: #ec4899;"></i>
-                    <span style="font-weight: 600;">אנה</span>
-                </button>
-
-                <!-- Profile Ilya -->
-                <button onclick="setUser('advisor')" class="btn-secondary"
-                    style="display: flex; align-items: center; justify-content: flex-start; gap: 1rem; padding: 1rem; width: 100%;">
-                    <i class="fa-solid fa-user-secret" style="font-size: 1.5rem; color: #10b981;"></i>
-                    <span style="font-weight: 600;">איליה</span>
-                </button>
-            </div>
+            <!-- Add new user form -->
+            <details id="add-user-details" style="text-align:right; margin-bottom:0.75rem;">
+                <summary style="cursor:pointer; color:var(--primary); font-weight:600; font-size:0.9rem; list-style:none; display:flex; align-items:center; gap:0.4rem; justify-content:center;">
+                    <i class="fa-solid fa-user-plus"></i> הוסף משתמש חדש
+                </summary>
+                <div style="margin-top:1rem; display:flex; flex-direction:column; gap:0.6rem;">
+                    <input id="new-user-name" type="text" placeholder="שם מלא" dir="rtl"
+                        style="padding:0.65rem 1rem; border-radius:10px; border:1.5px solid var(--panel-border); background:var(--panel-bg); color:var(--text-primary); font-size:0.95rem; width:100%; box-sizing:border-box;">
+                    <input id="new-user-phone" type="tel" placeholder="מספר טלפון (06450...)" dir="ltr"
+                        style="padding:0.65rem 1rem; border-radius:10px; border:1.5px solid var(--panel-border); background:var(--panel-bg); color:var(--text-primary); font-size:0.95rem; width:100%; box-sizing:border-box;">
+                    <button onclick="registerNewUser()" class="btn-primary" style="width:100%; padding:0.65rem;">
+                        <i class="fa-solid fa-check"></i> צור פרופיל
+                    </button>
+                </div>
+            </details>
 
             <button onclick="document.getElementById('user-selector-modal').style.display='none'" class="btn-secondary"
-                style="margin-top: 2rem; width: 100%; color: var(--text-muted);">סגור</button>
+                style="width:100%; color:var(--text-muted); font-size:0.85rem; padding:0.5rem;">סגור</button>
         </div>
     </div>
 
