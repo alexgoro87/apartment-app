@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-building-user" style="flex-shrink:0;"></i>
                     <h1
                         style="font-size: clamp(0.75rem, 2.5vw, 1.15rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin:0;">
-                        פרויקט רבין כרמיאל</h1>
+                        לאטי — פרויקט רבין כרמיאל</h1>
                 </div>
                 <div id="countdown-timer"
                     style="flex: 1; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -178,6 +178,40 @@
                     style="margin-top:1rem; width:100%; justify-content:center; gap:0.5rem; display:flex;">
                     <i class="fa-solid fa-map"></i> מפת קומות ויזואלית
                 </button>
+
+                <!-- V25: G4 Upload -->
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--panel-border);">
+                    <label
+                        style="font-weight:600; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; display:block;">עדכון
+                        סטטוס דירות</label>
+                    <input type="file" id="g4-upload" accept=".pdf" style="display:none;"
+                        onchange="window.processG4Upload(this.files[0])">
+                    <button onclick="document.getElementById('g4-upload').click()" class="btn-secondary"
+                        style="width:100%; justify-content:center; gap:0.5rem; display:flex;">
+                        <i class="fa-solid fa-file-arrow-up"></i> העלה טופס G4
+                    </button>
+                    <div id="g4-status"
+                        style="font-size:0.8rem; color:var(--text-muted); margin-top:0.3rem; text-align:center;"></div>
+                </div>
+
+                <!-- V25: Backup/Restore -->
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--panel-border);">
+                    <label
+                        style="font-weight:600; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; display:block;">גיבוי
+                        נתונים</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button onclick="window.exportUserData()" class="btn-secondary"
+                            style="flex:1; justify-content:center; gap:0.3rem; display:flex; font-size:0.85rem;">
+                            <i class="fa-solid fa-download"></i> ייצוא
+                        </button>
+                        <input type="file" id="import-data" accept=".json" style="display:none;"
+                            onchange="window.importUserData(this.files[0])">
+                        <button onclick="document.getElementById('import-data').click()" class="btn-secondary"
+                            style="flex:1; justify-content:center; gap:0.3rem; display:flex; font-size:0.85rem;">
+                            <i class="fa-solid fa-upload"></i> שחזור
+                        </button>
+                    </div>
+                </div>
             </aside>
 
             <!-- Data Area -->
@@ -263,30 +297,167 @@
         </div>
     </div>
 
-    <!-- Specs Modal -->
+    <!-- Specs Modal — based on הגרלה-2279-מפרט-חתום.pdf -->
     <div id="specs-modal" class="modal">
-        <div class="modal-content glass-panel">
+        <div class="modal-content glass-panel" style="max-width: 700px;">
             <span class="close-specs-modal">&times;</span>
-            <h2><i class="fa-solid fa-clipboard-list"></i> תקציר מפרט טכני</h2>
+            <h2 id="specs-modal-title"><i class="fa-solid fa-clipboard-list"></i> מפרט טכני — לאטי רמת רבין</h2>
+
+            <!-- Dynamic Apartment-Specific Area -->
+            <div id="apt-specific-specs"
+                style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px;">
+                <!-- Filled via JS -->
+            </div>
+
             <div class="specs-content"
-                style="max-height: 50vh; overflow-y: auto; padding-right: 1rem; margin-top: 1rem;">
-                <!-- Summarized key points from typical ISRAELI public housing (Mehir Lamishtaken) specs -->
-                <ul style="line-height: 1.8;">
-                    <li><strong>ריצוף:</strong> גרניט פורצלן 80x80 כולל בחירה מ-12 גוונים (למעט חדרים רטובים). ריצוף
-                        אנטי-סליפ (R10/R11) במרפסות וחדרי רחצה.</li>
-                    <li><strong>דלתות:</strong> דלת כניסה פלדה בטחונית. דלתות פנים עץ במילוי כוורת/פלקסבורד (פנדור או
-                        שווה ערך) במספר גוונים.</li>
-                    <li><strong>מיזוג אוויר:</strong> <i>הכנה בלבד</i>. מיני מרכזי בסלון ועיליים בחדרים (כולל צנרת ניקוז
-                        וחשמל).</li>
-                    <li><strong>חשמל:</strong> חיבור תלת פאזי 3x25A, אינטרקום עם מסך מגע צבעוני.</li>
-                    <li><strong>מטבח:</strong> ארון סנדוויץ'/MDF, שיש אבן קיסר 2 ס"מ (3 גוונים לבחירה), כיור בהתקנה
-                        שטוחה או אינטגרלית.</li>
-                    <li><strong>כלים סניטריים:</strong> מונחות כסטנדרט (קיימת אופציה לתלויות), ברזי "חמת" (או שווה ערך),
-                        ארון אמבטיה בחדר רחצה מרכזי.</li>
-                    <li><strong>תריסים וחלונות:</strong> תריס גלילה חשמלי בסלון בלבד. שאר החדרים תריסים ידניים. חלונות
-                        אלומיניום עם זכוכית בידודית.</li>
-                </ul>
-                <div style="margin-top: 1.5rem; text-align: center;">
+                style="max-height: 60vh; overflow-y: auto; padding-right: 1rem; margin-top: 1rem; font-size: 0.9rem; line-height: 1.7;">
+
+                <details open>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🏗️ שלד ומבנה</summary>
+                    <ul>
+                        <li>בניינים מגורים בני 9 דירות, 3 קומות</li>
+                        <li>שלד בטון מזוין עם קירות חוץ בחיפוי אבן</li>
+                        <li>גובה הדירה: ~2.55 מ' מריצוף לתקרה</li>
+                        <li>גובה חדרי שירות ופרוזדור: מ-2.05 מ'</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🪨 ריצוף וחיפוי</summary>
+                    <ul>
+                        <li><strong>סלון, מטבח, פינת אוכל:</strong> גרניט פורצלן 80×80 ס"מ, בחירה מ-12 דגמים/גוונים
+                            (LAPPATO — "בריק חלקי")</li>
+                        <li><strong>חדרי שינה:</strong> גרניט פורצלן 80×80 ס"מ. אופציה לפרקט למינציה בחדר הורים</li>
+                        <li><strong>חדרי רחצה:</strong> ריצוף אנטי-סליפ 33×33 ס"מ, חיפוי קירות עד התקרה (~2.10 מ')
+                            בקרמיקה</li>
+                        <li><strong>מרפסת שמש:</strong> גרניט פורצלן דמוי דק / אנטי-סליפ</li>
+                        <li><strong>מרפסת שירות:</strong> ריצוף אנטי-סליפ R10/R11</li>
+                        <li>שילוב אריח דקורטיבי אחד ("פרקט דמוי") מגוון הבחירה</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🍳 מטבח</summary>
+                    <ul>
+                        <li><strong>ארונות:</strong> יחידה עליונה + תחתונה, כולל B.I (גוף סנדוויץ'/MDF). ~8-10 מ"ר בהתאם
+                            לטיפוס</li>
+                        <li><strong>שיש:</strong> אבן קיסר 2 ס"מ, 3 דגמים לבחירה</li>
+                        <li><strong>כיור:</strong> התקנה שטוחה (קו אפס), סילקוורץ או נירוסטה</li>
+                        <li><strong>ברז:</strong> ברז מטבח מעוצב עם מזלף נשלף (חמת או ש"ע)</li>
+                        <li><strong>תאורה:</strong> ספוטים שקועים מעל משטח העבודה</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🚿 חדרי רחצה ושירותים</summary>
+                    <ul>
+                        <li><strong>אסלות:</strong> אסלות תלויות עם מכל הדחה סמוי בכל חדרי השירותים</li>
+                        <li><strong>ברזים:</strong> חמת / מדגל או ש"ע</li>
+                        <li><strong>ארון אמבטיה:</strong> ארון מעוצב + משטח + כיור אינטגרלי בכל חדר רחצה</li>
+                        <li><strong>מקלחון:</strong> מחיצת זכוכית (חלק קבוע + דלת)</li>
+                        <li><strong>חדר רחצה הורים:</strong> כולל אמבטיה או מקלחון + ארון אמבטיה מורחב</li>
+                        <li><strong>חיפוי קירות:</strong> קרמיקה עד גובה תקרה, צבע לבן פנים</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🚪 דלתות</summary>
+                    <ul>
+                        <li><strong>דלת כניסה:</strong> דלת ביטחון מעוצבת (רב-בריח / ש"ע), פלדה עם ציפוי</li>
+                        <li><strong>דלתות פנים:</strong> פנדור / חמדיה — עץ מילוי כוורת/פלקסבורד, משקופים רחבים, ~3
+                            גוונים</li>
+                        <li><strong>WPC:</strong> חלק תחתון עמיד למים בדלתות חדרים רטובים</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🪟 חלונות ותריסים</summary>
+                    <ul>
+                        <li><strong>פרופילים:</strong> אלומיניום (קליל או ש"ע)</li>
+                        <li><strong>זכוכית:</strong> בידודית כפולה (תרמית + אקוסטית) בכל הדירה</li>
+                        <li><strong>תריסים:</strong> גלילה <strong>חשמליים</strong> בכל הדירה (למעט ממ"ד, חדרי רחצה,
+                            מרפסת שירות)</li>
+                        <li><strong>רשתות:</strong> מותקנות בכל חלונות הדירה</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        ⚡ חשמל ותקשורת</summary>
+                    <ul>
+                        <li><strong>חיבור:</strong> תלת פאזי 3×25A</li>
+                        <li><strong>אינטרקום:</strong> V.R עם מסך צבעוני (טלוויזיה במעגל סגור)</li>
+                        <li><strong>נקודות:</strong> טלפון + TV בכל חדר, הכנה לקולנוע ביתי בסלון</li>
+                        <li><strong>אביזרים:</strong> Gewiss או ש"ע</li>
+                        <li><strong>תאורה:</strong> נקודות לד שקועות במסדרון ובאזור הכניסה</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        ❄️ מיזוג אוויר</summary>
+                    <ul>
+                        <li><strong>הכנה בלבד</strong> — מיני-מרכזי או VRF (לפי טיפוס הדירה)</li>
+                        <li>כולל: צנרת נחושת, ניקוזים, הנמכות גבס, נקודות חשמל ייעודיות</li>
+                        <li>מיקום יחידה חיצונית מתוכנן על הגג / מרפסת טכנית</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🏠 ממ"ד</summary>
+                    <ul>
+                        <li>דלת פלדה ביטחונית אטומה + חלון ביטחוני (אם רלוונטי לפי תקן)</li>
+                        <li>ריצוף, חיפוי קירות וצביעה כמו שאר הדירה</li>
+                        <li>כולל שקעי חשמל ונקודות תקשורת</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        📦 מחסן ומרפסת</summary>
+                    <ul>
+                        <li><strong>מחסן:</strong> ריצוף גרניט פורצלן, נקודת תאורה, דלת פלדה (לדירות הזכאיות)</li>
+                        <li><strong>מרפסת שמש:</strong> נקודת מים + גז + שקע חשמל מוגן מים, מנקז רצפה</li>
+                        <li><strong>מעקות:</strong> אלומיניום / זכוכית לפי עיצוב אדריכלי</li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary
+                        style="cursor:pointer; font-weight:700; font-size:1rem; color:var(--primary); margin-bottom:0.5rem;">
+                        🏢 שטחים משותפים</summary>
+                    <ul>
+                        <li>לובי כניסה מעוצב עם תאורה, תיבות דואר, אינטרקום</li>
+                        <li>מעלית לכל הקומות (כולל קומת מרתף/חניה)</li>
+                        <li>חניה מקורה / חצי מקורה (לפי בניין)</li>
+                        <li>גינון ופיתוח סביבתי</li>
+                    </ul>
+                </details>
+
+                <div
+                    style="margin-top: 1.5rem; padding: 1rem; background: rgba(59,130,246,0.08); border-radius: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <strong>⚠️ הבדלים בין טיפוסי דירות:</strong> איכות החומרים זהה לכל הדירות. ההבדלים הם בכמויות — מ"ר
+                    ארונות מטבח, מספר נקודות חשמל, וגודל משטחי שיש — בהתאם למספר החדרים ושטח הדירה.
+                </div>
+
+                <div style="margin-top: 1rem; text-align: center;">
                     <a href="docs/הגרלה-2279-מפרט-חתום.pdf" target="_blank" class="btn-outline"
                         style="text-decoration:none; display:inline-block;"><i class="fa-solid fa-file-pdf"></i> צפה
                         במפרט המלא (PDF)</a>
@@ -360,10 +531,11 @@
     </button>
 
 
-    <script src="config.js?v=24"></script>
-    <script src="data_v12.js?v=24"></script>
-    <script src="app.js?v=24"></script>
-    <script src="sync.js?v=24"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="config.js?v=26"></script>
+    <script src="data_v12.js?v=26"></script>
+    <script src="app.js?v=26"></script>
+    <script src="sync.js?v=26"></script>
 </body>
 
 </html>

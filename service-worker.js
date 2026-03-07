@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ramat-rabin-v8-24';
+const CACHE_NAME = 'ramat-rabin-v8-26';
 const ASSETS = [
     './',
     './index.html',

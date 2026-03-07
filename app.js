@@ -737,14 +737,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.1); border-radius: 6px;">
                         <div>
                             <div style="font-weight:600; color: var(--text-main);">מעמד בחירת דירה — דמי רצינות</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">10.3.2026</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">11.3.2026</div>
                         </div>
                         <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(paySelection)} ₪</strong>
                     </li>
                     <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.1); border-radius: 6px;">
                         <div>
                             <div style="font-weight:600; color: var(--text-main);">חתימת חוזה — השלמה ל-7%</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">24.3.2026 (השלמה בקיזוז 2,000₪)</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">25.3.2026 (השלמה בקיזוז 2,000₪)</div>
                         </div>
                         <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(payContract)} ₪</strong>
                     </li>
@@ -752,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.05); border-radius: 6px;">
                         <div>
                             <div style="font-weight:600; color: var(--text-main);">יתרת תשלום שלישי (13%)</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">7.5.2026 (3% הון + 10% משכנתה)</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">8.5.2026 (3% הון + 10% משכנתה)</div>
                         </div>
                         <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(pay13Total)} ₪</strong>
                     </li>
@@ -849,9 +849,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button onclick="shareWhatsApp('${apt.id}', {stopPropagation:()=>{}})" style="padding: 1rem 2rem; text-align: center; flex: 1; border: none; font-size: 1rem; cursor: pointer; background: rgba(37,211,102,0.1); color: var(--text-main); font-family: inherit; border-radius: 8px; cursor:pointer;">
                     <i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> שתף ב-WhatsApp
                 </button>
-                <a href="../הגרלה-2279-מפרט-חתום.pdf" target="_blank" class="btn-outline" style="text-decoration:none; padding: 1rem 2rem; text-align: center; flex: 1; border-radius: 8px;">
-                    <i class="fa-solid fa-clipboard-list"></i> מפרט טכני
-                </a>
             </div>
 
             <!-- Similar Apartments Section -->
@@ -1042,6 +1039,242 @@ document.addEventListener('DOMContentLoaded', () => {
         viewerModal.style.display = 'block';
     };
 
+    window.openSpecsModalForApt = function (aptId, e) {
+        if (e) e.stopPropagation();
+        const apt = processedData.find(a => a.id === aptId);
+        if (!apt) return;
+
+        const specsModal = document.getElementById('specs-modal');
+        const specificDiv = document.getElementById('apt-specific-specs');
+        const modalTitle = document.getElementById('specs-modal-title');
+
+        // Calculate specific specs based on rooms
+        const roomsStr = apt.rooms.toString();
+        let kitchenCabinets = '~8 מ"א (עליון + תחתון + B.I)';
+        let electricalPoints = 'כ-60 נקודות';
+        let acType = 'הכנה למיני-מרכזי';
+
+        if (roomsStr.includes('3')) {
+            kitchenCabinets = '~6 מ"א (עליון + תחתון + B.I)';
+            electricalPoints = '~50 נקודות בחלוקה גמישה';
+        } else if (roomsStr.includes('4')) {
+            kitchenCabinets = '~8 מ"א (עליון + תחתון + B.I)';
+            electricalPoints = '~65 נקודות בחלוקה גמישה';
+        } else if (roomsStr.includes('5')) {
+            kitchenCabinets = '~10 מ"א (עליון + תחתון + B.I)';
+            electricalPoints = '~80 נקודות בחלוקה גמישה';
+        } else if (roomsStr.includes('6')) {
+            kitchenCabinets = '~12 מ"א (עליון + תחתון + B.I)';
+            acType = 'הכנה למיזוג VRF מתקדם';
+            electricalPoints = '~95 נקודות בחלוקה גמישה';
+        }
+
+        specificDiv.innerHTML = `
+            <h4 style="margin-bottom: 0.5rem; color: #10b981;"><i class="fa-solid fa-house-circle-check"></i> טיפוס ${apt.aptType} | דירה ${apt.aptText} (${apt.rooms} חדרים)</h4>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                <li style="margin-bottom: 0.3rem;"><i class="fa-solid fa-ruler-horizontal" style="color: var(--text-muted); width: 1.2rem;"></i> <strong>ארונות מטבח:</strong> ${kitchenCabinets}</li>
+                <li style="margin-bottom: 0.3rem;"><i class="fa-solid fa-fan" style="color: var(--text-muted); width: 1.2rem;"></i> <strong>מיזוג אוויר:</strong> ${acType} (הנמכות גבס כלולות)</li>
+                <li style="margin-bottom: 0.3rem;"><i class="fa-solid fa-plug" style="color: var(--text-muted); width: 1.2rem;"></i> <strong>נקודות חשמל:</strong> ${electricalPoints} בדירה</li>
+                <li><i class="fa-solid fa-sink" style="color: var(--text-muted); width: 1.2rem;"></i> <strong>רחצה:</strong> ארון מעוצב תלוי + כיור אינטגרלי + מראה בכל חדרי הרחצה</li>
+            </ul>
+        `;
+
+        modalTitle.innerHTML = `<i class="fa-solid fa-clipboard-list"></i> מפרט דירה ${apt.aptText} (מבנה ${apt.building})`;
+        specificDiv.style.display = 'block';
+
+        // Hide apt-modal explicitly when switching to specs
+        const aptModal = document.getElementById('apt-modal');
+        if (aptModal) aptModal.classList.remove('visible');
+
+        specsModal.classList.add('visible');
+    };
+
+    window.openGeneralSpecsModal = function () {
+        const specsModal = document.getElementById('specs-modal');
+        const specificDiv = document.getElementById('apt-specific-specs');
+        const modalTitle = document.getElementById('specs-modal-title');
+
+        modalTitle.innerHTML = `<i class="fa-solid fa-clipboard-list"></i> מפרט טכני — לאטי רמת רבין`;
+        specificDiv.style.display = 'none';
+        specsModal.classList.add('visible');
+    };
+
+    // === V25: G4 PDF UPLOAD — Auto-detect red-marked apartments ===
+    window.processG4Upload = async function (file) {
+        if (!file) return;
+        const statusEl = document.getElementById('g4-status');
+        statusEl.textContent = '⏳ מעבד את הטופס...';
+
+        try {
+            // Check if PDF.js is available
+            if (typeof pdfjsLib === 'undefined') {
+                statusEl.textContent = '❌ PDF.js לא נטען. נסה לרענן את הדף.';
+                return;
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const totalPages = pdf.numPages;
+            let takenApts = [];
+
+            for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 2 });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const ctx = canvas.getContext('2d');
+
+                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                // Scan for red pixels in rows
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+                const rowHeight = Math.floor(canvas.height / 15); // ~15 rows per page estimate
+
+                for (let row = 0; row < 15; row++) {
+                    let redCount = 0;
+                    let totalSampled = 0;
+                    const yStart = row * rowHeight;
+                    const yEnd = Math.min(yStart + rowHeight, canvas.height);
+
+                    // Sample pixels across the row
+                    for (let y = yStart; y < yEnd; y += 3) {
+                        for (let x = 0; x < canvas.width; x += 3) {
+                            const idx = (y * canvas.width + x) * 4;
+                            const r = pixels[idx];
+                            const g = pixels[idx + 1];
+                            const b = pixels[idx + 2];
+                            totalSampled++;
+
+                            // Detect red-ish colors (various shades of red/pink marking)
+                            if (r > 180 && g < 120 && b < 120) {
+                                redCount++;
+                            }
+                        }
+                    }
+
+                    // If >5% of sampled pixels are red, this row is marked
+                    if (totalSampled > 0 && (redCount / totalSampled) > 0.05) {
+                        takenApts.push({ page: pageNum, row: row });
+                    }
+                }
+            }
+
+            if (takenApts.length === 0) {
+                statusEl.textContent = '⚠️ לא נמצאו דירות מסומנות באדום. נסה להעלות טופס מעודכן.';
+                return;
+            }
+
+            // Map detected red rows to apartment IDs
+            // Show user a summary and let them confirm
+            const count = takenApts.length;
+            statusEl.innerHTML = `✅ נמצאו <strong>${count}</strong> שורות מסומנות באדום.<br>
+                <small>עמודים: ${[...new Set(takenApts.map(a => a.page))].join(', ')}</small><br>
+                <button onclick="window.applyG4Results()" class="btn-secondary" style="margin-top:0.3rem; font-size:0.8rem;">
+                    <i class="fa-solid fa-check"></i> החל שינויים
+                </button>`;
+
+            // Store temp results for confirmation
+            window._g4Results = takenApts;
+
+        } catch (err) {
+            console.error('G4 processing error:', err);
+            statusEl.textContent = '❌ שגיאה בעיבוד הקובץ: ' + err.message;
+        }
+    };
+
+    window.applyG4Results = function () {
+        const results = window._g4Results;
+        if (!results || results.length === 0) return;
+
+        // For each detected red row, mark corresponding apartments as taken
+        // The mapping depends on the G4 form structure
+        // For now, we mark based on page/row index matching processedData order
+        let marked = 0;
+
+        // Group apartments by building for matching with G4 pages
+        const aptsByBuilding = {};
+        processedData.forEach(apt => {
+            if (!aptsByBuilding[apt.building]) aptsByBuilding[apt.building] = [];
+            aptsByBuilding[apt.building].push(apt);
+        });
+
+        // Sort each building's apartments by aptText (apartment number)
+        Object.keys(aptsByBuilding).forEach(b => {
+            aptsByBuilding[b].sort((a, b2) => parseInt(a.aptText) - parseInt(b2.aptText));
+        });
+
+        const buildings = Object.keys(aptsByBuilding).sort();
+
+        results.forEach(r => {
+            // Map page to building, row to apartment within that building
+            const buildingIdx = r.page - 1;
+            if (buildingIdx < buildings.length) {
+                const building = buildings[buildingIdx];
+                const apts = aptsByBuilding[building];
+                if (r.row < apts.length) {
+                    const apt = apts[r.row];
+                    localStorage.setItem(`apt_${apt.aptText}_${apt.building}`, 'taken');
+                    marked++;
+                }
+            }
+        });
+
+        const statusEl = document.getElementById('g4-status');
+        statusEl.textContent = `✅ ${marked} דירות סומנו כנלקחו. הדף יתרענן...`;
+        window._g4Results = null;
+
+        setTimeout(() => {
+            if (window.renderData) window.renderData();
+            showToast(`${marked} דירות עודכנו מטופס G4`, 'success');
+        }, 800);
+    };
+
+    // === V25: EXPORT / IMPORT USER DATA ===
+    window.exportUserData = function () {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            data[key] = localStorage.getItem(key);
+        }
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rabin-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showToast('הנתונים יוצאו בהצלחה 💾', 'success');
+    };
+
+    window.importUserData = function (file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                let count = 0;
+                Object.keys(data).forEach(key => {
+                    localStorage.setItem(key, data[key]);
+                    count++;
+                });
+
+                showToast(`שוחזרו ${count} פריטים בהצלחה ✅`, 'success');
+
+                // Refresh the view
+                setTimeout(() => {
+                    if (window.renderData) window.renderData();
+                }, 500);
+            } catch (err) {
+                showToast('שגיאה בקריאת הקובץ — ודא שזה קובץ JSON תקין', 'error');
+            }
+        };
+        reader.readAsText(file);
+    };
+
 
 
     // Modal Logic & Pinch Zoom handling
@@ -1143,7 +1376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const specsBtn = document.getElementById('specs-btn');
         const specsCloseSpan = document.querySelector('.close-specs-modal');
 
-        specsBtn.onclick = () => specsModal.classList.add('visible');
+        specsBtn.onclick = () => window.openGeneralSpecsModal();
         specsCloseSpan.onclick = () => specsModal.classList.remove('visible');
 
         // Apt Modal
@@ -1163,7 +1396,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === BETA v2: COUNTDOWN TIMER / POST-SELECTION PAYMENT TRACKER ===
     function updateCountdown() {
-        const target = new Date('2026-03-10T09:00:00+02:00');
+        const target = new Date('2026-03-11T09:00:00+02:00');
         const now = new Date();
         const diff = target - now;
         const el = document.getElementById('countdown-timer');
@@ -1178,9 +1411,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Post-selection: show next payment date
             const payments = [
-                { date: '2026-03-10', label: 'דמי רצינות', pct: '2,000₪' },
-                { date: '2026-03-24', label: 'חתימת חוזה (7%)', pct: '7%' },
-                { date: '2026-05-07', label: 'תשלום שלישי (13%)', pct: '13%' },
+                { date: '2026-03-11', label: 'דמי רצינות', pct: '2,000₪' },
+                { date: '2026-03-25', label: 'חתימת חוזה (7%)', pct: '7%' },
+                { date: '2026-05-08', label: 'תשלום שלישי (13%)', pct: '13%' },
                 { date: '2026-10-31', label: 'תשלום 10%', pct: '10%' },
                 { date: '2027-03-31', label: 'תשלום 10%', pct: '10%' },
                 { date: '2027-08-31', label: 'תשלום 10%', pct: '10%' },
