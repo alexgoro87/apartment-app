@@ -892,7 +892,7 @@ const apartmentData = [
     "storage": 4.921,
     "direction": "קרירה",
     "price": "1418815",
-    "type": "A _2",
+    "type": "A_2",
     "imageFile": "page_050.png"
   },
   {
@@ -1396,7 +1396,7 @@ const apartmentData = [
     "storage": 4.921,
     "direction": "קרירה",
     "price": "1418815",
-    "type": "A _2",
+    "type": "A_2",
     "imageFile": "page_050.png"
   },
   {

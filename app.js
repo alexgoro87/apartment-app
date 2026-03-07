@@ -1120,6 +1120,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Use exact D4 parsed mapping directly
         viewerImage.src = `floorplans/${apt.imageFile}`;
+        viewerImage.onerror = function () {
+            this.style.display = 'none';
+            if (viewerTitle) viewerTitle.innerHTML += '<div style="margin-top:20px;color:#f59e0b;font-size:1.2rem;">⚠️ סרטוט לא זמין לדגם זה</div>';
+        };
+        viewerImage.onload = function () { this.style.display = ''; };
 
         // Reset zoom state
         scale = 1;
