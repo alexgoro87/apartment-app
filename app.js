@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="apt-details">
                     <div class="detail-item"><i class="fa-solid fa-map"></i> דגם: <span class="highlight">${apt.aptType}</span></div>
-                    <div class="detail-item"><i class="fa-solid fa-building"></i> <span class="highlight">מבנה ${apt.building}</span></div>
+                    <div class="detail-item"><i class="fa-solid fa-building"></i> <span class="highlight">מבנה ${apt.building}</span> · מתחם ${apt.lot}</div>
                     <div class="detail-item"><i class="fa-solid fa-door-closed"></i> דירה ${apt.aptText}</div>
                     <div class="detail-item"><i class="fa-solid fa-layer-group"></i> קומה ${apt.floor}</div>
                     <div class="detail-item"><i class="fa-solid fa-bed"></i> ${apt.rooms} חדרים</div>
@@ -796,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="margin-bottom: 1.5rem; text-align: center;">
                 <h2><i class="fa-solid fa-house"></i> טיפוס ${apt.aptType}</h2>
                 <div style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">
-                    מבנה ${apt.building} | דירה ${apt.aptText} | קומה ${apt.floor} | ${apt.rooms} חדרים | ${apt.area} מ"ר
+                    מבנה ${apt.building} · מתחם ${apt.lot} | דירה ${apt.aptText} | קומה ${apt.floor} | ${apt.rooms} חדרים | ${apt.area} מ"ר
                 </div>
                 <div style="font-size: 1.8rem; font-weight: bold; color: var(--accent); margin-top: 0.75rem;">${formatPrice(price)} ₪</div>
                 <div style="display:flex; justify-content:center; align-items:center; gap:0.75rem; margin-top: 1rem; flex-wrap:wrap;">
