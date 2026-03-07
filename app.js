@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-bottom:0.75rem;">
                     <div style="flex:1; min-width:140px;">
                         <label style="color:var(--text-muted); font-size:0.85rem;">ריבית שנתית (%)</label>
-                        <input id="mort-rate" type="number" value="4.5" step="0.1" style="width:100%; margin-top:0.3rem; padding:0.5rem; border-radius:6px; background:rgba(15,23,42,0.8); color:white; border:1px solid var(--panel-border); font-family:inherit; text-align:center;" oninput="calcMort('${apt.id}',${apt.price})">
+                        <input id="mort-rate" type="number" value="5" step="0.1" style="width:100%; margin-top:0.3rem; padding:0.5rem; border-radius:6px; background:rgba(15,23,42,0.8); color:white; border:1px solid var(--panel-border); font-family:inherit; text-align:center;" oninput="calcMort('${apt.id}',${apt.price})">
                     </div>
                     <div style="flex:1; min-width:140px;">
                         <label style="color:var(--text-muted); font-size:0.85rem;">שנות משכנתא</label>
