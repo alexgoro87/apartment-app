@@ -193,25 +193,6 @@
                     <div id="g4-status"
                         style="font-size:0.8rem; color:var(--text-muted); margin-top:0.3rem; text-align:center;"></div>
                 </div>
-
-                <!-- V25: Backup/Restore -->
-                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--panel-border);">
-                    <label
-                        style="font-weight:600; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; display:block;">גיבוי
-                        נתונים</label>
-                    <div style="display:flex; gap:0.5rem;">
-                        <button onclick="window.exportUserData()" class="btn-secondary"
-                            style="flex:1; justify-content:center; gap:0.3rem; display:flex; font-size:0.85rem;">
-                            <i class="fa-solid fa-download"></i> ייצוא
-                        </button>
-                        <input type="file" id="import-data" accept=".json" style="display:none;"
-                            onchange="window.importUserData(this.files[0])">
-                        <button onclick="document.getElementById('import-data').click()" class="btn-secondary"
-                            style="flex:1; justify-content:center; gap:0.3rem; display:flex; font-size:0.85rem;">
-                            <i class="fa-solid fa-upload"></i> שחזור
-                        </button>
-                    </div>
-                </div>
             </aside>
 
             <!-- Data Area -->
@@ -532,10 +513,12 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="config.js?v=26"></script>
-    <script src="data_v12.js?v=26"></script>
-    <script src="app.js?v=26"></script>
-    <script src="sync.js?v=26"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="config.js?v=27"></script>
+    <script src="data_v12.js?v=27"></script>
+    <script src="app.js?v=27"></script>
+    <script src="sync.js?v=27"></script>
 </body>
 
 </html>

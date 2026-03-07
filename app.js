@@ -171,7 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // === BETA v2: NOTES PER APARTMENT ===
     window.saveNote = function (id) {
         const noteEl = document.getElementById(`note_${id}`);
-        if (noteEl) safeSetItem(`note_${id}`, noteEl.value);
+        if (noteEl) {
+            safeSetItem(`note_${id}`, noteEl.value);
+            if (window.syncNote) window.syncNote(id, noteEl.value);
+        }
     };
     window.getNote = (id) => safeGetItem(`note_${id}`) || '';
 
@@ -1216,6 +1219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (r.row < apts.length) {
                     const apt = apts[r.row];
                     localStorage.setItem(`apt_${apt.aptText}_${apt.building}`, 'taken');
+                    if (window.syncAptStatus) window.syncAptStatus(`apt_${apt.aptText}_${apt.building}`, 'taken');
                     marked++;
                 }
             }
