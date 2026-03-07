@@ -226,34 +226,37 @@
         </main>
     </div>
 
-    <!-- User Selection Modal (V6 Cloud Sync) -->
-    <!-- V17: Dynamic User Registration Modal -->
+    <!-- User Selection Modal — 3 fixed profiles -->
     <div id="user-selector-modal" class="modal" style="display: none; background: rgba(15, 23, 42, 0.92);">
         <div class="modal-content glass-panel"
-            style="text-align: center; padding: 2rem; max-width: 480px; width: 95vw;">
+            style="text-align: center; padding: 2rem; max-width: 420px; width: 90vw;">
             <h2 style="margin-bottom: 0.35rem;">👤 בחר פרופיל</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.88rem;">כל משתמש שומר מועדפים זזה
-                נפרד</p>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.88rem;">כל משתמש שומר מועדפים בנפרד
+            </p>
 
-            <!-- Registered users list -->
-            <div id="user-list" style="display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.25rem;"></div>
-
-            <!-- Add new user form -->
-            <details id="add-user-details" style="text-align:right; margin-bottom:0.75rem;">
-                <summary
-                    style="cursor:pointer; color:var(--primary); font-weight:600; font-size:0.9rem; list-style:none; display:flex; align-items:center; gap:0.4rem; justify-content:center;">
-                    <i class="fa-solid fa-user-plus"></i> הוסף משתמש חדש
-                </summary>
-                <div style="margin-top:1rem; display:flex; flex-direction:column; gap:0.6rem;">
-                    <input id="new-user-name" type="text" placeholder="שם מלא" dir="rtl"
-                        style="padding:0.65rem 1rem; border-radius:10px; border:1.5px solid var(--panel-border); background:var(--panel-bg); color:var(--text-primary); font-size:0.95rem; width:100%; box-sizing:border-box;">
-                    <input id="new-user-phone" type="tel" placeholder="מספר טלפון (06450...)" dir="ltr"
-                        style="padding:0.65rem 1rem; border-radius:10px; border:1.5px solid var(--panel-border); background:var(--panel-bg); color:var(--text-primary); font-size:0.95rem; width:100%; box-sizing:border-box;">
-                    <button onclick="registerNewUser()" class="btn-primary" style="width:100%; padding:0.65rem;">
-                        <i class="fa-solid fa-check"></i> צור פרופיל
-                    </button>
-                </div>
-            </details>
+            <div style="display:flex; flex-direction:column; gap:0.7rem; margin-bottom:1.25rem;">
+                <button onclick="setUser('me')" class="btn-secondary"
+                    style="display:flex; align-items:center; gap:1rem; padding:0.9rem 1.2rem; width:100%; font-size:1rem;">
+                    <span style="width:40px; height:40px; border-radius:50%; background:#3b82f6;
+                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                                 font-weight:700; font-size:1.1rem; color:#fff;">א</span>
+                    <span style="flex:1; text-align:right; font-weight:600;">אלכס</span>
+                </button>
+                <button onclick="setUser('wife')" class="btn-secondary"
+                    style="display:flex; align-items:center; gap:1rem; padding:0.9rem 1.2rem; width:100%; font-size:1rem;">
+                    <span style="width:40px; height:40px; border-radius:50%; background:#ec4899;
+                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                                 font-weight:700; font-size:1.1rem; color:#fff;">א</span>
+                    <span style="flex:1; text-align:right; font-weight:600;">אנה</span>
+                </button>
+                <button onclick="setUser('advisor')" class="btn-secondary"
+                    style="display:flex; align-items:center; gap:1rem; padding:0.9rem 1.2rem; width:100%; font-size:1rem;">
+                    <span style="width:40px; height:40px; border-radius:50%; background:#10b981;
+                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                                 font-weight:700; font-size:1.1rem; color:#fff;">א</span>
+                    <span style="flex:1; text-align:right; font-weight:600;">איליה</span>
+                </button>
+            </div>
 
             <button onclick="document.getElementById('user-selector-modal').style.display='none'" class="btn-secondary"
                 style="width:100%; color:var(--text-muted); font-size:0.85rem; padding:0.5rem;">סגור</button>
@@ -357,10 +360,10 @@
     </button>
 
 
-    <script src="config.js?v=23"></script>
-    <script src="data_v12.js?v=23"></script>
-    <script src="app.js?v=23"></script>
-    <script src="sync.js?v=23"></script>
+    <script src="config.js?v=24"></script>
+    <script src="data_v12.js?v=24"></script>
+    <script src="app.js?v=24"></script>
+    <script src="sync.js?v=24"></script>
 </body>
 
 </html>

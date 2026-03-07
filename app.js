@@ -238,106 +238,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === V17: GENERIC SMART USER MANAGEMENT (Phone + Name) ===
 
-    // Load all registered users (stored as array of {id, name, phone, color} objects)
-    function getAllUsers() {
-        try { return JSON.parse(safeGetItem('v17_users') || '[]'); }
-        catch (e) { return []; }
-    }
-    function saveAllUsers(arr) { safeSetItem('v17_users', JSON.stringify(arr)); }
-
-    // Migrate old hardcoded profiles once
-    function migrateOldUsers() {
-        const users = getAllUsers();
-        if (users.length === 0) {
-            const oldDefaults = [
-                { id: 'me', name: 'אלכס', phone: '', color: '#3b82f6' },
-                { id: 'wife', name: 'אנה', phone: '', color: '#ec4899' },
-                { id: 'advisor', name: 'איליה', phone: '', color: '#10b981' }
-            ];
-            // Only add them if any of those keys have favorites stored already
-            const hasOldFavs = oldDefaults.some(u => JSON.parse(safeGetItem(`apt_favorites_${u.id}`) || '[]').length > 0);
-            if (hasOldFavs) { saveAllUsers(oldDefaults); }
-        }
-    }
-    migrateOldUsers();
-
-    const USER_COLORS = ['#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16'];
+    // ── Fixed Users (V23) ──
+    const FIXED_USERS = {
+        'me': { name: 'אלכס', color: '#3b82f6' },
+        'wife': { name: 'אנה', color: '#ec4899' },
+        'advisor': { name: 'איליה', color: '#10b981' }
+    };
 
     window.currentUser = safeGetItem('selected_user') || null;
-
-    // Render user list inside the modal
-    function renderUserList() {
-        const users = getAllUsers();
-        const listEl = document.getElementById('user-list');
-        if (!listEl) return;
-        if (users.length === 0) {
-            listEl.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">אין משתמשים רשומים עדיין</p>';
-            return;
-        }
-        listEl.innerHTML = users.map(u => {
-            const isCurrent = window.currentUser === u.id;
-            const favCount = getUserFavs(u.id).size;
-            return `<button onclick="setUser('${u.id}')" class="btn-secondary"
-                style="display:flex; align-items:center; gap:0.9rem; padding:0.85rem 1rem; width:100%;
-                       border:2px solid ${isCurrent ? u.color : 'transparent'}; transition:border 0.2s;">
-                <span style="width:36px; height:36px; border-radius:50%; background:${u.color};
-                             display:flex; align-items:center; justify-content:center; flex-shrink:0;
-                             font-weight:700; font-size:1rem; color:#fff;">
-                    ${u.name.charAt(0).toUpperCase()}
-                </span>
-                <span style="flex:1; text-align:right;">
-                    <span style="font-weight:600; font-size:0.95rem;">${u.name}</span>
-                    ${u.phone ? `<br><span style="font-size:0.75rem; color:var(--text-muted); direction:ltr;">${u.phone}</span>` : ''}
-                </span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">❤️ ${favCount}</span>
-                <button onclick="event.stopPropagation(); deleteUser('${u.id}')" title="מחק" style="
-                    background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:0.85rem; padding:0 0.25rem;">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </button>`;
-        }).join('');
-    }
-
-    window.registerNewUser = function () {
-        const nameEl = document.getElementById('new-user-name');
-        const phoneEl = document.getElementById('new-user-phone');
-        const name = nameEl ? nameEl.value.trim() : '';
-        const phone = phoneEl ? phoneEl.value.trim().replace(/\D/g, '') : '';
-        if (!name) { showToast('נא להזין שם', 'error'); return; }
-        const users = getAllUsers();
-        // Use phone as unique ID if available, otherwise timestamp
-        const userId = phone || `user_${Date.now()}`;
-        if (users.find(u => u.id === userId)) { showToast('משתמש עם מספר זה כבר קיים', 'error'); return; }
-        const color = USER_COLORS[users.length % USER_COLORS.length];
-        users.push({ id: userId, name, phone, color });
-        saveAllUsers(users);
-        if (nameEl) nameEl.value = '';
-        if (phoneEl) phoneEl.value = '';
-        const details = document.getElementById('add-user-details');
-        if (details) details.removeAttribute('open');
-        renderUserList();
-        showToast(`נוסף: ${name}`, 'success');
-    };
-
-    window.deleteUser = function (userId) {
-        const users = getAllUsers().filter(u => u.id !== userId);
-        saveAllUsers(users);
-        if (window.currentUser === userId) {
-            window.currentUser = null;
-            safeSetItem('selected_user', '');
-            const el = document.getElementById('current-user-display');
-            if (el) el.textContent = 'פרופיל';
-        }
-        renderUserList();
-    };
 
     window.setUser = function (userId) {
         safeSetItem('selected_user', userId);
         window.currentUser = userId;
         favorites = getUserFavs(userId);
         document.getElementById('user-selector-modal').style.display = 'none';
-        const users = getAllUsers();
-        const u = users.find(x => x.id === userId);
+        const u = FIXED_USERS[userId];
         const displayName = u ? u.name : userId;
         const el = document.getElementById('current-user-display');
         if (el) el.textContent = displayName;
@@ -346,24 +261,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function checkUser() {
-        renderUserList(); // Always refresh list
         if (!window.currentUser) {
             document.getElementById('user-selector-modal').style.display = 'flex';
         } else {
-            // Restore display name
-            const users = getAllUsers();
-            const u = users.find(x => x.id === window.currentUser);
+            const u = FIXED_USERS[window.currentUser];
             const el = document.getElementById('current-user-display');
             if (el) el.textContent = u ? u.name : window.currentUser;
         }
     }
-    // Also refresh when modal opens
-    document.querySelector('[onclick*="user-selector-modal"]') &&
-        document.querySelectorAll('[onclick*="user-selector-modal"]').forEach(btn => {
-            const old = btn.onclick;
-            btn.addEventListener('click', () => renderUserList());
-        });
     setTimeout(checkUser, 800);
+
 
     // Initial Render
     renderData();
