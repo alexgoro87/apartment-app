@@ -12,8 +12,25 @@ const PROJECT_CONFIG = {
     // PWA / Title
     appTitle: 'פרויקט רבין כרמיאל - בחירת דירה',
 
-    // Selection Day countdown target (ISO string)
+    // Selection Day — default countdown target (ISO string)
+    // Can be overridden by user via the date picker (saved in localStorage)
     selectionDayISO: '2026-03-12T09:00:00+02:00',
+
+    // Payment schedule: each entry = { dayOffset, label, pct, highlight }
+    // dayOffset is relative to selectionDay (day 0)
+    paymentSchedule: [
+        { dayOffset: 0, label: 'מעמד בחירת דירה — דמי רצינות', pct: '2,000₪', pctNum: null, highlight: 'green' },
+        { dayOffset: 14, label: 'חתימת חוזה — השלמה ל-7%', pct: '7%', pctNum: 0.07, highlight: 'green', note: 'השלמה בקיזוז 2,000₪' },
+        { dayOffset: 58, label: 'יתרת תשלום שלישי (13%)', pct: '13%', pctNum: 0.13, highlight: 'green-light', note: '3% הון + 10% משכנתה' },
+        { dayOffset: 234, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 385, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 538, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 691, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 842, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 1026, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 1207, label: 'תשלום 10%', pct: '10%', pctNum: 0.10, highlight: 'none' },
+        { dayOffset: 1451, label: 'מסירה (10% אחרונים)', pct: '10%', pctNum: 0.10, highlight: 'blue', note: '7 ימים לפני קבלת מפתח' },
+    ],
 
     // Data file: relative path to the JS data file (must declare `const apartmentData = [...]`)
     dataFile: './data_v12.js',

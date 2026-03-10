@@ -16,6 +16,91 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (e) { console.warn("Local storage blocked"); }
     };
 
+    // === SELECTION DAY HELPERS ===
+    function getSelectionDay() {
+        const saved = safeGetItem('selectionDayISO');
+        if (saved) return new Date(saved);
+        return new Date(PROJECT_CONFIG.selectionDayISO);
+    }
+
+    function formatDateHE(d) {
+        // returns dd.mm.yyyy
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        return `${dd}.${mm}.${d.getFullYear()}`;
+    }
+
+    function addDays(date, days) {
+        const r = new Date(date);
+        r.setDate(r.getDate() + days);
+        return r;
+    }
+
+    function getPaymentDates(selDay) {
+        return PROJECT_CONFIG.paymentSchedule.map(p => ({
+            ...p,
+            date: addDays(selDay, p.dayOffset),
+            dateStr: formatDateHE(addDays(selDay, p.dayOffset)),
+            dateISO: addDays(selDay, p.dayOffset).toISOString().slice(0, 10)
+        }));
+    }
+
+    // Selection Day Modal functions
+    window.openSelectionDayModal = function () {
+        const modal = document.getElementById('selection-day-modal');
+        const input = document.getElementById('selection-day-input');
+        const selDay = getSelectionDay();
+        // Set input value to current selection day in YYYY-MM-DD
+        input.value = selDay.toISOString().slice(0, 10);
+        updateSelectionDayPreview();
+        modal.style.display = 'flex';
+        // Add live preview listener
+        input.onchange = updateSelectionDayPreview;
+        input.oninput = updateSelectionDayPreview;
+    };
+
+    function updateSelectionDayPreview() {
+        const input = document.getElementById('selection-day-input');
+        const preview = document.getElementById('selection-day-preview');
+        if (!input || !input.value || !preview) return;
+        const selDay = new Date(input.value + 'T09:00:00');
+        if (isNaN(selDay.getTime())) { preview.innerHTML = '<span style="color:#ef4444;">תאריך לא תקין</span>'; return; }
+        const payments = getPaymentDates(selDay);
+        const icons = ['🏠', '✍️', '💰', '📅', '📅', '📅', '📅', '📅', '📅', '📅', '🔑'];
+        preview.innerHTML = '<div style="font-weight:700; margin-bottom:0.5rem; color:var(--primary);">תצוגה מקדימה של הלוז:</div>' +
+            payments.map((p, i) => {
+                const icon = icons[i] || '📅';
+                const noteStr = p.note ? ` <span style="color:var(--text-muted);">(${p.note})</span>` : '';
+                return `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <span>${icon} ${p.label}${noteStr}</span>
+                    <strong style="color:var(--accent); direction:ltr; white-space:nowrap;">${p.dateStr}</strong>
+                </div>`;
+            }).join('');
+    }
+
+    window.saveSelectionDay = function () {
+        const input = document.getElementById('selection-day-input');
+        if (!input || !input.value) return;
+        const newISO = input.value + 'T09:00:00+02:00';
+        safeSetItem('selectionDayISO', newISO);
+        // Sync to Firebase if available
+        if (window.syncAptStatus) window.syncAptStatus('selectionDayISO', newISO);
+        document.getElementById('selection-day-modal').style.display = 'none';
+        updateCountdown();
+        if (window.showToast) showToast('יום הבחירה עודכן — כל הלוז התעדכן ✅', 'success');
+    };
+
+    window.resetSelectionDay = function () {
+        try { localStorage.removeItem('selectionDayISO'); } catch (e) { }
+        const input = document.getElementById('selection-day-input');
+        if (input) {
+            input.value = PROJECT_CONFIG.selectionDayISO.slice(0, 10);
+            updateSelectionDayPreview();
+        }
+        updateCountdown();
+        if (window.showToast) showToast('יום הבחירה אופס לברירת מחדל', 'info');
+    };
+
 
     // V12 data uses: lot, building, aptNum, floor, rooms, area, balcony, storage, direction, price, type, imageFile
     // Also has V11-style fields: id, rank, isLast, sunDir, parkingDist, aptType (from data_v11.js rebuild)
@@ -736,66 +821,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fa-regular fa-calendar-check"></i> לוח תשלומים רשמי (לפי חוזה)
                 </h3>
                 <ul style="list-style: none; padding: 0; font-size: 0.95rem;">
-                    <!-- 7% -->
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.1); border-radius: 6px;">
-                        <div>
-                            <div style="font-weight:600; color: var(--text-main);">מעמד בחירת דירה — דמי רצינות</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">11.3.2026</div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(paySelection)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.1); border-radius: 6px;">
-                        <div>
-                            <div style="font-weight:600; color: var(--text-main);">חתימת חוזה — השלמה ל-7%</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">25.3.2026 (השלמה בקיזוז 2,000₪)</div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(payContract)} ₪</strong>
-                    </li>
-                    <!-- 13% (split 3/10) -->
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.6rem; background: rgba(5, 150, 105, 0.05); border-radius: 6px;">
-                        <div>
-                            <div style="font-weight:600; color: var(--text-main);">יתרת תשלום שלישי (13%)</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">8.5.2026 (3% הון + 10% משכנתה)</div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(pay13Total)} ₪</strong>
-                    </li>
-                    <!-- 8x 10% -->
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 31.10.2026</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 31.03.2027</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 31.08.2027</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 31.01.2028</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 30.06.2028</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 31.12.2028</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--panel-border);">
-                        <div><div style="font-weight:500;">תשלום 10%</div><div style="font-size: 0.75rem; color: var(--text-muted);">עד 30.06.2029</div></div>
-                        <strong style="color: var(--text-main);">${formatPrice(pay10)} ₪</strong>
-                    </li>
-                    <!-- Final 10% -->
-                    <li style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px;">
-                        <div>
-                            <div style="font-weight:600; color: var(--text-main);">מסירה (10% אחרונים)</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">מרץ 2030 (7 ימים לפני קבלת מפתח)</div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 1.1rem;">${formatPrice(pay10)} ₪</strong>
-                    </li>
+                    ${(function () {
+                const selDay = getSelectionDay();
+                const payments = getPaymentDates(selDay);
+                return payments.map((p, i) => {
+                    // Compute payment amount for this step
+                    let amount;
+                    if (i === 0) amount = paySelection;
+                    else if (i === 1) amount = payContract;
+                    else if (i === 2) amount = pay13Total;
+                    else amount = pay10;
+                    const noteStr = p.note ? ` (${p.note})` : '';
+                    // Styling per highlight type
+                    let bgStyle, strongStyle, fontWeight;
+                    if (p.highlight === 'green') {
+                        bgStyle = 'background: rgba(5, 150, 105, 0.1); border-radius: 6px;';
+                        strongStyle = 'color: var(--primary); font-size: 1.1rem;';
+                        fontWeight = '600';
+                    } else if (p.highlight === 'green-light') {
+                        bgStyle = 'background: rgba(5, 150, 105, 0.05); border-radius: 6px;';
+                        strongStyle = 'color: var(--primary); font-size: 1.1rem;';
+                        fontWeight = '600';
+                    } else if (p.highlight === 'blue') {
+                        bgStyle = 'background: rgba(59, 130, 246, 0.1); border-radius: 6px;';
+                        strongStyle = 'color: var(--primary); font-size: 1.1rem;';
+                        fontWeight = '600';
+                    } else {
+                        bgStyle = 'border-bottom: 1px solid var(--panel-border);';
+                        strongStyle = 'color: var(--text-main);';
+                        fontWeight = '500';
+                    }
+                    return `<li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0.5rem 0.6rem; ${bgStyle}">
+                                <div>
+                                    <div style="font-weight:${fontWeight}; color: var(--text-main);">${p.label}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">${p.dateStr}${noteStr}</div>
+                                </div>
+                                <strong style="${strongStyle}">${formatPrice(amount)} ₪</strong>
+                            </li>`;
+                }).join('');
+            })()}
                 </ul>
             </div>
 
@@ -1398,11 +1462,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     initModals();
 
-    // === BETA v2: COUNTDOWN TIMER / POST-SELECTION PAYMENT TRACKER ===
+    // === BETA v2: COUNTDOWN TIMER / POST-SELECTION PAYMENT TRACKER (DYNAMIC) ===
     function updateCountdown() {
-        const target = new Date('2026-03-11T09:00:00+02:00');
+        const selDay = getSelectionDay();
         const now = new Date();
-        const diff = target - now;
+        const diff = selDay - now;
         const el = document.getElementById('countdown-timer');
         if (!el) return;
 
@@ -1413,24 +1477,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const m = Math.floor((diff % 3600000) / 60000);
             el.textContent = `${d} ימים, ${h} שעות, ${m} דק' עד לבחירת הדירה ⏱️`;
         } else {
-            // Post-selection: show next payment date
-            const payments = [
-                { date: '2026-03-11', label: 'דמי רצינות', pct: '2,000₪' },
-                { date: '2026-03-25', label: 'חתימת חוזה (7%)', pct: '7%' },
-                { date: '2026-05-08', label: 'תשלום שלישי (13%)', pct: '13%' },
-                { date: '2026-10-31', label: 'תשלום 10%', pct: '10%' },
-                { date: '2027-03-31', label: 'תשלום 10%', pct: '10%' },
-                { date: '2027-08-31', label: 'תשלום 10%', pct: '10%' },
-                { date: '2028-01-31', label: 'תשלום 10%', pct: '10%' },
-                { date: '2028-06-30', label: 'תשלום 10%', pct: '10%' },
-                { date: '2028-12-31', label: 'תשלום 10%', pct: '10%' },
-                { date: '2029-06-30', label: 'תשלום 10%', pct: '10%' },
-                { date: '2030-03-01', label: 'מסירה (10% אחרון)', pct: '10%' }
-            ];
-            const next = payments.find(p => new Date(p.date) > now);
+            // Post-selection: show next payment date (dynamic from config)
+            const payments = getPaymentDates(selDay);
+            const next = payments.find(p => p.date > now);
             if (next) {
-                const daysUntil = Math.ceil((new Date(next.date) - now) / 86400000);
-                el.innerHTML = `💰 ${next.label} — <strong>${next.pct}</strong> | בעוד ${daysUntil} ימים (${next.date.split('-').reverse().join('.')})`;
+                const daysUntil = Math.ceil((next.date - now) / 86400000);
+                el.innerHTML = `💰 ${next.label} — <strong>${next.pct}</strong> | בעוד ${daysUntil} ימים (${next.dateStr})`;
             } else {
                 el.textContent = '🏠 כל התשלומים הושלמו — מזל טוב!';
             }

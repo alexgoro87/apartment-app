@@ -51,6 +51,9 @@
                         style="padding:0.5rem 0.65rem;"><i class="fa-solid fa-moon"></i></button>
                     <button onclick="addToCalendar()" class="btn-secondary" title="הוסף יום הבחירה ליומן"
                         style="padding:0.5rem 0.65rem;"><i class="fa-regular fa-calendar-plus"></i></button>
+                    <button onclick="openSelectionDayModal()" class="btn-secondary" title="עדכן יום בחירה"
+                        style="padding:0.5rem 0.65rem;"><i class="fa-solid fa-calendar-day"></i> <span
+                            class="btn-label">יום בחירה</span></button>
 
                     <button id="specs-btn" class="btn-secondary" title="מפרט טכני"><i
                             class="fa-solid fa-clipboard-list"></i> <span class="btn-label">מפרט</span></button>
@@ -501,6 +504,42 @@
             style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: auto; position: relative; z-index: 99999;">
             <img id="viewer-image" src="" alt="Floorplan"
                 style="max-width: 100%; max-height: 100vh; object-fit: contain; transform-origin: center center; transition: transform 0.1s ease-out;">
+        </div>
+    </div>
+
+    <!-- Selection Day Modal -->
+    <div id="selection-day-modal" class="modal" style="display:none; background:rgba(15,23,42,0.92);">
+        <div class="modal-content glass-panel" style="text-align:center; padding:2rem; max-width:520px; width:92vw;">
+            <h2 style="margin-bottom:0.5rem;"><i class="fa-solid fa-calendar-day"></i> עדכון יום בחירה</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.88rem;">שנה את יום הבחירה וכל הלוז
+                יתעדכן אוטומטית</p>
+
+            <div style="margin-bottom:1.25rem;">
+                <label
+                    style="display:block; font-weight:600; margin-bottom:0.4rem; color:var(--text-main); font-size:0.95rem;">בחר
+                    תאריך:</label>
+                <input type="date" id="selection-day-input" class="fancy-select"
+                    style="width:100%; max-width:260px; padding:0.75rem; font-size:1.1rem; text-align:center; direction:ltr; border-radius:10px; background:rgba(15,23,42,0.8); color:white; border:1px solid var(--panel-border); font-family:inherit;">
+            </div>
+
+            <div id="selection-day-preview"
+                style="text-align:right; max-height:300px; overflow-y:auto; margin-bottom:1.25rem; padding:1rem; background:rgba(59,130,246,0.05); border:1px solid var(--panel-border); border-radius:12px; font-size:0.88rem; line-height:1.8;">
+                <!-- Preview of computed dates will be injected here -->
+            </div>
+
+            <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                <button onclick="saveSelectionDay()" class="btn-primary"
+                    style="padding:0.75rem 2rem; border-radius:10px; font-size:1rem; border:none; cursor:pointer; font-family:inherit;">
+                    <i class="fa-solid fa-check"></i> שמור
+                </button>
+                <button onclick="resetSelectionDay()" class="btn-secondary"
+                    style="padding:0.75rem 1.5rem; font-size:0.9rem;">
+                    <i class="fa-solid fa-rotate-left"></i> איפוס לברירת מחדל
+                </button>
+            </div>
+
+            <button onclick="document.getElementById('selection-day-modal').style.display='none'" class="btn-secondary"
+                style="width:100%; color:var(--text-muted); font-size:0.85rem; padding:0.5rem; margin-top:1rem;">סגור</button>
         </div>
     </div>
 
